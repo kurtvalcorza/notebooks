@@ -5,6 +5,7 @@ This notebook demonstrates how to transcribe audio files using OpenAI’s Whispe
 
 # Audio Diarization with `gpt-4o-transcribe-diarize`
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kurtvalcorza/notebooks/blob/main/speech_to_text_diarization.ipynb)
+
 This notebook demonstrates how to perform audio diarization using OpenAI's `gpt-4o-transcribe-diarize` model. It takes an audio file as input, processes it in chunks, and generates a diarized transcript, identifying different speakers in the audio. Obtain an OpenAI API key from the [OpenAI platform](https://platform.openai.com/).
 
 # H2O Flow in Google Colab
