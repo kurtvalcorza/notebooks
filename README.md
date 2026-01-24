@@ -45,8 +45,7 @@ Supports common audio formats (MP3, WAV) and provides a simple pipeline for uplo
 Demonstrates how to perform audio diarization using OpenAI’s `gpt-4o-transcribe-diarize` model.  
 The notebook processes audio in chunks and generates a diarized transcript that identifies different speakers.
 
-> An OpenAI API key is required. You can obtain one from the  
-> [OpenAI platform](https://platform.openai.com/).
+> An OpenAI API key is required. You can obtain one from the [OpenAI platform](https://platform.openai.com/).
 
 ---
 
