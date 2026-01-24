@@ -14,26 +14,23 @@ The notebooks are organized accordingly to reduce confusion and make setup expli
 
 ```
 - `notebooks/`
-  - `colab-web/` — Notebooks intended to be run in the Colab browser UI  
   - `colab-vscode/` — Notebooks intended to be run via VS Code + Colab extension  
 - `LICENSE`
 - `README.md`
 ```
 
-
 ### How to choose the right folder
-- Use **`colab-web/`** if you want a zero-setup, browser-only experience  
-- Use **`colab-vscode/`** if you prefer working in VS Code with Colab-backed compute
+- Use the **Open in Colab** links below if you want a zero-setup, browser-only experience  
+- Use **`notebooks/colab-vscode/`** if you prefer working in VS Code with Colab-backed compute
 
 ---
 
-## Colab Web Notebooks (`notebooks/colab-web/`)
+## Colab Web Notebooks (run in the browser)
 
 These notebooks are designed to be opened and run directly in the **Google Colab web interface**.
 
 ### Transcribe Audio with OpenAI Whisper
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](
-https://colab.research.google.com/github/kurtvalcorza/notebooks/blob/main/notebooks/colab-web/Transcribe_Audio_Whisper.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kurtvalcorza/notebooks/blob/main/notebooks/Transcribe_Audio_Whisper.ipynb)
 
 Demonstrates how to transcribe audio files using OpenAI’s Whisper model via the `whisper` Python package.  
 Supports common audio formats (MP3, WAV) and provides a simple pipeline for uploading, transcribing, and saving transcripts.
@@ -41,8 +38,7 @@ Supports common audio formats (MP3, WAV) and provides a simple pipeline for uplo
 ---
 
 ### Audio Diarization with `gpt-4o-transcribe-diarize`
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](
-https://colab.research.google.com/github/kurtvalcorza/notebooks/blob/main/notebooks/colab-web/speech_to_text_diarization.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kurtvalcorza/notebooks/blob/main/notebooks/speech_to_text_diarization.ipynb)
 
 Demonstrates how to perform audio diarization using OpenAI’s `gpt-4o-transcribe-diarize` model.  
 The notebook processes audio in chunks and generates a diarized transcript that identifies different speakers.
@@ -52,8 +48,7 @@ The notebook processes audio in chunks and generates a diarized transcript that 
 ---
 
 ### H2O Flow in Google Colab
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](
-https://colab.research.google.com/github/kurtvalcorza/notebooks/blob/main/notebooks/colab-web/H2O_Flow_Google_Colab.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kurtvalcorza/notebooks/blob/main/notebooks/H2O_Flow_Google_Colab.ipynb)
 
 Provides a step-by-step guide to setting up and accessing **H2O Flow** inside a Google Colab environment.  
 The notebook installs required dependencies, initializes the H2O server, and uses `localtunnel` to expose a public URL for the H2O Flow web interface.
