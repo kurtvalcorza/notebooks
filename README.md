@@ -44,6 +44,11 @@ This notebook demonstrates how to perform audio diarization using OpenAI's `gpt-
 
 This notebook provides a step-by-step guide to setting up and accessing H2O Flow within a Google Colab environment. It installs necessary dependencies, initializes the H2O server, and uses localtunnel to create a public URL for the H2O Flow web interface, allowing users to interact with H2O's machine learning capabilities directly from Colab.
 
+# VibeVoice-ASR: Unified Speech-to-Text with Speaker Diarization
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kurtvalcorza/notebooks/blob/main/VibeVoice_ASR_Colab.ipynb)
+
+This notebook demonstrates [Microsoft's VibeVoice-ASR](https://huggingface.co/microsoft/VibeVoice-ASR), a 9B parameter model providing unified speech-to-text with speaker diarization and timestamps. Features include 60-minute single-pass processing, consistent speaker tracking, and customizable hotwords for domain-specific accuracy. Requires A100 GPU (Colab Pro) for best results; T4 works with 4-bit quantization.
+
 ---
 
 ## Colab + VS Code Notebooks (`notebooks/colab-vscode/`)
