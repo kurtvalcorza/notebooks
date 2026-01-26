@@ -51,6 +51,13 @@ This notebook demonstrates [Microsoft's VibeVoice-ASR](https://huggingface.co/mi
 
 ---
 
+# Qwen3-TTS Demo
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kurtvalcorza/notebooks/blob/main/Qwen3_TTS.ipynb)
+
+This notebook runs the [Qwen3-TTS](https://huggingface.co/spaces/Qwen/Qwen3-TTS) demo. It supports Voice Design (Instruct to Speech), Voice Cloning, and Custom Voices using the Qwen2.5-based TTS models. It is adapted to run on a free Colab GPU (T4).
+
+---
+
 ## Colab + VS Code Notebooks (`notebooks/colab-vscode/`)
 
 These notebooks are intended to be run using the **Google Colab extension for Visual Studio Code**, allowing you to:
