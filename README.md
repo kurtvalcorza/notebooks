@@ -49,6 +49,11 @@ This notebook provides a step-by-step guide to setting up and accessing H2O Flow
 
 This notebook demonstrates [Microsoft's VibeVoice-ASR](https://huggingface.co/microsoft/VibeVoice-ASR), a 9B parameter model providing unified speech-to-text with speaker diarization and timestamps. Features include 60-minute single-pass processing, consistent speaker tracking, and customizable hotwords for domain-specific accuracy. Requires A100 GPU (Colab Pro) for best results; T4 works with 4-bit quantization.
 
+# Qwen3-ASR: High-Performance Automatic Speech Recognition
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kurtvalcorza/notebooks/blob/main/Qwen3_ASR_Colab.ipynb)
+
+This notebook implements the [Qwen3-ASR-1.7B](https://huggingface.co/Qwen/Qwen3-ASR-1.7B) model for fast and accurate Automatic Speech Recognition. It features automatic language detection, high-speed inference on T4 GPUs, and supports transcribing audio files directly from Google Drive.
+
 ---
 
 # Qwen3-TTS Demo
