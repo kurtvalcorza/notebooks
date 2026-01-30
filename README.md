@@ -54,8 +54,6 @@ This notebook demonstrates [Microsoft's VibeVoice-ASR](https://huggingface.co/mi
 
 This notebook implements the [Qwen3-ASR-1.7B](https://huggingface.co/Qwen/Qwen3-ASR-1.7B) model for fast and accurate Automatic Speech Recognition. It features automatic language detection, high-speed inference on T4 GPUs, and supports transcribing audio files directly from Google Drive.
 
----
-
 # Qwen3-TTS Demo
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/kurtvalcorza/notebooks/blob/main/Qwen3_TTS.ipynb)
 
