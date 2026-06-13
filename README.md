@@ -22,8 +22,7 @@ The notebooks are organized accordingly to reduce confusion and make setup expli
 ├── H2O_Flow_Google_Colab.ipynb
 ├── colab-vscode/                        # Notebooks for the VS Code + Colab extension
 │   ├── Colab_in_VSCode.ipynb
-│   ├── README.md
-│   └── LICENSE
+│   └── README.md
 ├── LICENSE
 └── README.md
 ```
@@ -104,5 +103,5 @@ This repository intentionally favors **Git-based workflows** over Google Drive m
 
 ## License
 
-This project is licensed under the **MIT License**.  
+MIT — built with AI.  
 See the [`LICENSE`](LICENSE) file for full details.

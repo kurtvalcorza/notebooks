@@ -174,4 +174,4 @@ This project is licensed under the **MIT License**.
 You are free to use, modify, and distribute this code, with or without modification, for any purpose, provided that the original copyright
 notice and license text are included in all copies or substantial portions of the software.
 
-See the [`LICENSE`](LICENSE) file for full details.
+See the [`LICENSE`](../LICENSE) file for full details.
