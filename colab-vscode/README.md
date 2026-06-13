@@ -24,7 +24,7 @@ This setup is ideal for demos, experiments, and short-lived research or prototyp
 
 ## Contents
 
-- `colab_in_vscode.ipynb` — Demo notebook for validating and bootstrapping a Colab runtime inside VS Code
+- `Colab_in_VSCode.ipynb` — Demo notebook for validating and bootstrapping a Colab runtime inside VS Code
 
 ---
 
@@ -50,7 +50,7 @@ Install the following:
    - Install the official extension
 
 2. **Open the notebook**
-   - Open `colab_in_vscode.ipynb` in VS Code
+   - Open `Colab_in_VSCode.ipynb` in VS Code
 
 3. **Select a Colab runtime**
    - Use the kernel selector (top-right of the notebook)
