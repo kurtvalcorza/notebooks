@@ -13,19 +13,27 @@ The notebooks are organized accordingly to reduce confusion and make setup expli
 ## Repository Structure
 
 ```
-- `notebooks/`
-  - `colab-vscode/` — Notebooks intended to be run via VS Code + Colab extension  
-- `LICENSE`
-- `README.md`
+.
+├── Transcribe_Audio_Whisper.ipynb       # Browser Colab notebooks (run from the repo root)
+├── speech_to_text_diarization.ipynb
+├── VibeVoice_ASR_Colab.ipynb
+├── Qwen3_ASR_Colab.ipynb
+├── Qwen3_TTS.ipynb
+├── H2O_Flow_Google_Colab.ipynb
+├── colab-vscode/                        # Notebooks for the VS Code + Colab extension
+│   ├── Colab_in_VSCode.ipynb
+│   └── README.md
+├── LICENSE
+└── README.md
 ```
 
 ### How to choose the right folder
 - Use the **Open in Colab** links below if you want a zero-setup, browser-only experience  
-- Use **`notebooks/colab-vscode/`** if you prefer working in VS Code with Colab-backed compute
+- Use **`colab-vscode/`** if you prefer working in VS Code with Colab-backed compute
 
 ---
 
-## Notebooks
+## Colab Notebooks (browser)
 
 Open any notebook directly in Google Colab using the badges below.
 
@@ -61,7 +69,7 @@ This notebook provides a step-by-step guide to setting up and accessing H2O Flow
 
 ---
 
-## Colab + VS Code Notebooks (`notebooks/colab-vscode/`)
+## Colab + VS Code Notebooks (`colab-vscode/`)
 
 These notebooks are intended to be run using the **Google Colab extension for Visual Studio Code**, allowing you to:
 
@@ -76,7 +84,7 @@ This demo notebook validates and bootstraps a Colab runtime inside VS Code by:
 - Inspecting the runtime filesystem
 - Cloning project repositories directly into the ephemeral runtime
 
-See the README inside `notebooks/colab-vscode/` for:
+See the README inside `colab-vscode/` for:
 - VS Code setup instructions
 - Runtime selection guidance
 - Workflow notes and constraints
@@ -95,5 +103,5 @@ This repository intentionally favors **Git-based workflows** over Google Drive m
 
 ## License
 
-This project is licensed under the **MIT License**.  
+MIT — built with AI.  
 See the [`LICENSE`](LICENSE) file for full details.
