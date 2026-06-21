@@ -5,6 +5,7 @@ Reads result files produced by:
   - the vLLM serving notebook (schema "vllm-serving-bench/1.0"),
   - the cross-framework notebook (schema "optimum-bench/1.0"),
   - the TensorRT-LLM notebook (schema "trtllm-bench/1.0"),
+  - the MLPerf Inference runner (schema "mlperf-inference/1.0"),
   - the MLPerf Training runner (schema "mlperf-training/1.0"), or
   - the PoC proxy notebook (has top-level "tests"/"env").
 
