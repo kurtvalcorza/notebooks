@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+"""Compare benchmark result JSONs side-by-side across platforms.
+
+Reads result files produced by either:
+  - the vLLM serving notebook (schema "vllm-serving-bench/1.0"), or
+  - the PoC proxy notebook (has top-level "tests"/"env").
+
+Usage:
+    python compare_results.py 'results/*.json' 'vllm_bench_results/*.json'
+"""
+import sys
+import glob
+import json
+
+
+def label(run):
+    env = run.get("env", {})
+    gpu = env.get("gpu_name") or env.get("gpu") or "?"
+    plat = env.get("platform") or env.get("environment") or "?"
+    return f"{gpu} ({plat})"
+
+
+def flatten_vllm(run):
+    """Pick the max-throughput ('inf') sweep point if present, else the last."""
+    sweep = run.get("sweep", {})
+    point = sweep.get("inf") or (list(sweep.values())[-1] if sweep else {})
+    if not isinstance(point, dict):
+        point = {}
+    return {
+        "model": run.get("model"),
+        "out tok/s (max)": point.get("output_throughput"),
+        "req/s (max)": point.get("request_throughput"),
+        "TTFT p99 ms": point.get("p99_ttft_ms"),
+        "TPOT p99 ms": point.get("p99_tpot_ms"),
+    }
+
+
+def flatten_poc(run):
+    t = run.get("tests", {})
+    out = {}
+    llm = t.get("llm", {})
+    if "ttft" in llm:
+        out["LLM TTFT p50 s"] = llm["ttft"].get("p50_s")
+        out["LLM tok/s p50"] = llm.get("tokens_per_s_p50")
+    if "rtf_p50" in t.get("asr", {}):
+        out["ASR RTF p50"] = t["asr"]["rtf_p50"]
+    if "ms_per_image_p50" in t.get("cv", {}):
+        out["CV ms/img p50"] = t["cv"]["ms_per_image_p50"]
+    return out
+
+
+def main(argv):
+    paths = []
+    for a in argv:
+        paths.extend(sorted(glob.glob(a)))
+    if not paths:
+        print(__doc__)
+        return
+
+    cols = {}
+    for p in paths:
+        try:
+            run = json.load(open(p))
+        except Exception as e:
+            print(f"skip {p}: {e}")
+            continue
+        if run.get("schema", "").startswith("vllm-serving-bench"):
+            cols[label(run)] = flatten_vllm(run)
+        else:
+            cols[label(run)] = flatten_poc(run)
+
+    if not cols:
+        print("no usable result files")
+        return
+
+    metrics = []
+    for c in cols.values():
+        for k in c:
+            if k not in metrics:
+                metrics.append(k)
+
+    names = list(cols)
+    w = max([len(m) for m in metrics] + [6])
+    print(f"{'metric':{w}} " + " ".join(f"{n[:26]:>26}" for n in names))
+    for m in metrics:
+        print(f"{m:{w}} " + " ".join(f"{str(cols[n].get(m, '-')):>26}" for n in names))
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
