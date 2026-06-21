@@ -145,3 +145,7 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
       (`cost_model.py`). Refine with measured DCGM power via `--power-watts`.
 - [x] **Training track** — portable LoRA/QLoRA fine-tune benchmark added
       (`lora_qlora_train_benchmark.ipynb`). Still to run on A100 + Colab.
+- [x] **Combined report** — `report.ipynb` aggregates the result schemas and
+      reuses `compare_results.py` / `cost_model.py`. Each section populates only
+      once its producing notebook (and `cost_model.py`) is present; degrades
+      gracefully otherwise.

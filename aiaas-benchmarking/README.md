@@ -39,6 +39,9 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
 - **`cost_model.py`** — turns the vLLM serving throughput into **$/M-tokens**,
   split into energy (power draw × PUE × electricity price) and amortized hardware
   (capex over a utilized lifetime). Per-GPU power/capex defaults, all overridable.
+- **`report.ipynb`** — combined, charted report: imports `compare_results.py`
+  (and `cost_model.py` when present) and summarizes the result schemas into one
+  place (`aiaas_report.md` / `.json`).
 
 > Your existing **NAIRA PoC v2** notebook is the *proxy* tier — a good
 > cross-platform hardware feel, but not comparable to industry numbers (see the
