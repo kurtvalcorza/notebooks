@@ -64,6 +64,26 @@ def flatten_train(run):
     }
 
 
+def flatten_mlperf(run):
+    """MLPerf Inference: VALID flag + QPS from the LoadGen summary."""
+    sm = run.get("loadgen_summary", {})
+
+    def pick(*names):
+        for n in names:
+            for k, v in sm.items():
+                if n.lower() in k.lower():
+                    return v
+        return None
+
+    return {
+        "model": run.get("model"),
+        "mlperf scenario": run.get("scenario"),
+        "mlperf valid": pick("Result is", "Result:"),
+        "mlperf QPS": pick("Samples per second", "Scheduled samples per second",
+                           "Completed samples per second"),
+    }
+
+
 def flatten_poc(run):
     t = run.get("tests", {})
     out = {}
@@ -102,6 +122,8 @@ def main(argv):
             cols.setdefault(label(run), {}).update(flatten_vllm(run))
         elif run.get("schema", "").startswith("lora-train-bench"):
             cols.setdefault(label(run), {}).update(flatten_train(run))
+        elif run.get("schema", "").startswith("mlperf-inference"):
+            cols.setdefault(label(run), {}).update(flatten_mlperf(run))
         elif "tests" in run:
             cols.setdefault(label(run), {}).update(flatten_poc(run))
         else:
