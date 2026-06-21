@@ -145,8 +145,19 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
       runs still need real datasets + the A100 (fork session).
 - [x] **Image-gen / ASR comparability** — upgraded from proxies to their MLPerf
       equivalents (sdxl / whisper) via the MLCFlow path; proxy notebooks dropped.
-- [ ] **optimum-benchmark** cross-framework run (needs fork session).
+- [x] **optimum-benchmark** cross-framework notebook added
+      (`optimum_crossframework_benchmark.ipynb`). Runs still need a fork session.
+- [x] **TensorRT-LLM** peak-ceiling notebook added (`tensorrt_llm_benchmark.ipynb`,
+      `trtllm-bench` PyTorch backend). Runs need the `TensorRT-LLM` fork session
+      on an A100/Hopper GPU.
 - [x] **Cost model** — `$/M-tokens` from power + amortized HW added
       (`cost_model.py`). Refine with measured DCGM power via `--power-watts`.
 - [x] **Training track** — portable LoRA/QLoRA fine-tune benchmark added
       (`lora_qlora_train_benchmark.ipynb`). Still to run on A100 + Colab.
+- [x] **Model-swap / cold-start cost** — `model_swap_benchmark.ipynb` measures
+      load/unload/cold-start + resident VRAM and gives a co-residency verdict for
+      the 40 GB card. Still to run on the A100.
+- [x] **Combined report** — `report.ipynb` aggregates the result schemas and
+      reuses `compare_results.py` / `cost_model.py`. Each section populates only
+      once its producing notebook (and `cost_model.py`) is present; degrades
+      gracefully otherwise.
