@@ -46,18 +46,23 @@ writes a normalized result JSON to a `*_results/` folder, and prints a summary.
 
 ## 3. Notebook & script catalog
 
-| File | Workload | Tier | Measures | Result schema | GPU |
-|------|----------|------|----------|---------------|-----|
-| `vllm_serving_benchmark.ipynb` | LLM serving | Comparable | TTFT, TPOT/ITL, throughput (rate sweep) | `vllm-serving-bench/1.0` | T4+ |
-| `tensorrt_llm_benchmark.ipynb` | LLM serving | Peak HW | TTFT, TPOT, throughput (concurrency sweep) | `trtllm-bench/1.0` | A100/Hopper |
-| `optimum_crossframework_benchmark.ipynb` | LLM | Cross-framework | decode throughput, latency, VRAM per backend | `optimum-bench/1.0` | T4+ |
-| `mlperf_inference_benchmark.ipynb` | vision · sdxl · whisper | Standard | LoadGen QPS / latency / accuracy (VALID) | `mlperf-inference/1.0` | A100 |
-| `mteb_benchmark.ipynb` | embeddings + reranking | Standard | MAP/MRR, Spearman, accuracy (leaderboard) | `mteb-bench/1.0` | any |
-| `mlperf_training_benchmark.ipynb` | reference-model training | Standard | MLLog throughput / eval_accuracy / time | `mlperf-training/1.0` | cluster (smoke on 1) |
-| `model_swap_benchmark.ipynb` | multi-tenant systems | Systems | load/unload, cold-start tax, resident/peak VRAM, co-residency | `model-swap-bench/1.0` | T4+ |
-| `cost_model.py` | — | Systems | `$/M-tokens` (energy + amortized HW) | `vllm-cost-model/1.0` | CPU |
-| `compare_results.py` | — | — | cross-platform comparison table | — | CPU |
-| `report.ipynb` | — | — | combined charted report over all schemas | — | CPU |
+| File | Workload | Tier | Measures | Result schema | GPU | Status |
+|------|----------|------|----------|---------------|-----|--------|
+| `vllm_serving_benchmark.ipynb` | LLM serving | Comparable | TTFT, TPOT/ITL, throughput (rate sweep) | `vllm-serving-bench/1.0` | T4+ | ✅ on `main` |
+| `tensorrt_llm_benchmark.ipynb` | LLM serving | Peak HW | TTFT, TPOT, throughput (concurrency sweep) | `trtllm-bench/1.0` | A100/Hopper | ✅ on `main` |
+| `optimum_crossframework_benchmark.ipynb` | LLM | Cross-framework | decode throughput, latency, VRAM per backend | `optimum-bench/1.0` | T4+ | ✅ on `main` |
+| `lora_qlora_train_benchmark.ipynb` | LLM fine-tune (proxy) | Proxy | train tok/s, samples/s, peak VRAM | `lora-train-bench/1.0` | T4+ | ⚠️ on `main`; dropped in #23 |
+| `mlperf_inference_benchmark.ipynb` | vision · sdxl · whisper | Standard | LoadGen QPS / latency / accuracy (VALID) | `mlperf-inference/1.0` | A100 | ⏳ PR #19 |
+| `mteb_benchmark.ipynb` | embeddings + reranking | Standard | MAP/MRR, Spearman, accuracy (leaderboard) | `mteb-bench/1.0` | any | ⏳ PR #22 |
+| `mlperf_training_benchmark.ipynb` | reference-model training | Standard | MLLog throughput / eval_accuracy / time | `mlperf-training/1.0` | cluster (smoke on 1) | ⏳ PR #23 (replaces LoRA) |
+| `model_swap_benchmark.ipynb` | multi-tenant systems | Systems | load/unload, cold-start tax, resident/peak VRAM, co-residency | `model-swap-bench/1.0` | T4+ | ⏳ PR #16 |
+| `cost_model.py` | — | Systems | `$/M-tokens` (energy + amortized HW) | `vllm-cost-model/1.0` | CPU | ✅ on `main` |
+| `compare_results.py` | — | — | cross-platform comparison table | — | CPU | ✅ on `main` |
+| `report.ipynb` | — | — | combined charted report over all schemas | — | CPU | ✅ on `main` |
+
+> **Availability:** ✅ = on `main` now; ⏳ = lands via the listed PR (see *Build
+> status* below); ⚠️ = present now but slated for removal. Rows marked ⏳ are not
+> in the repo yet — don't try to open them until their PR merges.
 
 ### Dropped (no industry-comparable harness)
 Embeddings-throughput, image-gen, ASR, and VLM **proxy** notebooks were removed.
@@ -71,23 +76,24 @@ industry-comparable harness, so it is dropped in favor of the **MLPerf Training*
 runner (`mlperf_training_benchmark.ipynb`, the comparable harness) — this lands
 via **PR #23**. Until #23 merges, `lora_qlora_train_benchmark.ipynb` (schema
 `lora-train-bench/1.0`, read by `compare_results.flatten_train`) still ships on
-`main`; #23 removes the notebook and that code path together. The catalog and
-schema tables above describe the post-#23 state.
+`main`; #23 removes the notebook and that code path together. The catalog above
+marks LoRA as ⚠️ (live, dropped in #23) and `mlperf_training_benchmark.ipynb` as
+its ⏳ pending replacement.
 
 ### Build status (PRs into `main`)
 | PR | Adds / changes |
 |----|----------------|
-| #10, #11 | initial package (vLLM serving, compare_results) — **merged** |
-| #12 | `cost_model.py` (+ serving records `tensor_parallel_size`) |
-| #13 | `optimum_crossframework_benchmark.ipynb` |
-| #14 | `tensorrt_llm_benchmark.ipynb` |
-| #15 | `report.ipynb` |
-| #16 | `model_swap_benchmark.ipynb` |
-| #18 | `DOCS.md`, `SESSION_HANDOFF.md` |
-| #19 | `mlperf_inference_benchmark.ipynb` (LoadGen app + MLCFlow sdxl/whisper) |
-| #20 | `docs/` per-notebook pages |
-| #22 | `mteb_benchmark.ipynb` |
-| #23 | `mlperf_training_benchmark.ipynb` (drops the LoRA proxy) |
+| #10, #11 | initial package (vLLM serving, compare_results) — ✅ **merged** |
+| #12 | `cost_model.py` (+ serving records `tensor_parallel_size`) — ✅ **merged** |
+| #13 | `optimum_crossframework_benchmark.ipynb` — ✅ **merged** |
+| #14 | `tensorrt_llm_benchmark.ipynb` — ✅ **merged** |
+| #15 | `report.ipynb` — ✅ **merged** |
+| #16 | `model_swap_benchmark.ipynb` — ⏳ open |
+| #18 | `DOCS.md`, `SESSION_HANDOFF.md` — ⏳ open (this PR) |
+| #19 | `mlperf_inference_benchmark.ipynb` (LoadGen app + MLCFlow sdxl/whisper) — ⏳ open |
+| #20 | `docs/` per-notebook pages — ⏳ open |
+| #22 | `mteb_benchmark.ipynb` — ⏳ open |
+| #23 | `mlperf_training_benchmark.ipynb` (drops the LoRA proxy) — ⏳ open |
 
 ---
 
@@ -135,8 +141,9 @@ compute_capability, cuda, driver, torch, python) and a `schema` string.
 - **`vllm-cost-model/1.0`** — `assumptions`, `results`: per-run `$/M` energy /
   hardware / total.
 
-`compare_results.py` reads the serving, cross-framework, TensorRT-LLM,
-MLPerf-training, and PoC schemas; `report.ipynb` reads the comparable schemas +
+`compare_results.py` reads the serving, LoRA/QLoRA training, cross-framework,
+TensorRT-LLM, and PoC schemas (PR #23 swaps the LoRA reader for the
+MLPerf-training schema); `report.ipynb` reads the comparable schemas +
 model-swap.
 
 ---
