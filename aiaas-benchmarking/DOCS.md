@@ -6,8 +6,7 @@ single **A100 (40 GB)** server and comparing it against cloud notebook services
 
 This is the reference manual. For the *why* (tiers, the five reasons a homemade
 timing notebook isn't industry-comparable, the 40 GB fit table, phases), read
-**`BENCHMARKING_STRATEGY.md`** first. Deep per-notebook pages (**`docs/`**) land
-in PR #20 — not present until that merges.
+**`BENCHMARKING_STRATEGY.md`** first. Deep per-notebook pages live in **`docs/`**.
 
 > **Design principle:** every benchmark notebook in this package is
 > **industry/community-comparable** — it runs the *same standardized harness the
@@ -66,9 +65,8 @@ writes a normalized result JSON to a `*_results/` folder, and prints a summary.
 | `compare_results.py` | — | — | cross-platform comparison table | — | CPU | ✅ on `main` |
 | `report.ipynb` | — | — | combined charted report over all schemas | — | CPU | ✅ on `main` |
 
-> **Availability:** ✅ = on `main` now; ⏳ = lands via the listed PR (see *Build
-> status* below); ⚠️ = present now but slated for removal. Rows marked ⏳ are not
-> in the repo yet — don't try to open them until their PR merges.
+> **Availability:** every row above is ✅ on `main` — the full suite has merged
+> (see *Build status* below for the PR history).
 
 ### Dropped (no industry-comparable harness)
 Embeddings-throughput, image-gen, ASR, and VLM **proxy** notebooks were removed.
