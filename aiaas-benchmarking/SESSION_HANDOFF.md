@@ -64,15 +64,23 @@ use.**
 2. Run `vllm_serving_benchmark.ipynb` on the **A100** (first comparable numbers),
    then on Colab to compare.
 3. Confirm A100 SKU (SXM/PCIe, 40/80 GB).
-4. Build **MLPerf runner** notebooks in `inference` (llama3.1-8b, resnet50,
-   whisper, sdxl; Offline + Server).
+4. ✅ **MLPerf runner** notebook (`mlperf_inference_benchmark.ipynb`): vision via the
+   `inference` fork's LoadGen app, plus an MLCFlow path for any model incl.
+   **sdxl** / **whisper** / llama. Credible runs need real datasets + the fork session.
 5. ✅ **optimum-benchmark** cross-framework notebook (runs need the fork session).
 6. ✅ **TensorRT-LLM** peak-ceiling notebook (runs need the fork session).
 7. ✅ **Cost model** ($/M-tokens). Refine with measured DCGM power; lock clocks
    (`nvidia-smi -lgc`).
-8. ✅ **Training track**: LoRA/QLoRA fine-tune (tokens/s, samples/s, peak VRAM).
-9. ✅ Serving all workload types resident at once won't fit 40 GB → model-swap /
-   cold-start cost measured (`model_swap_benchmark.ipynb`).
+8. ✅ **Retrieval quality**: MTEB notebook (embeddings + reranking, leaderboard).
+9. ✅ **Training track**: upgraded from the LoRA/QLoRA proxy (dropped — not
+   industry-comparable) to a **MLPerf Training** runner (`mlperf_training_benchmark.ipynb`).
+10. ✅ Serving all workload types resident at once won't fit 40 GB → model-swap /
+    cold-start cost measured (`model_swap_benchmark.ipynb`).
+
+> **Methodology note:** the suite keeps only **industry/community-comparable**
+> benchmarks. Proxy-tier notebooks with no standardized harness (embeddings
+> throughput, image-gen, ASR, VLM, LoRA fine-tune) were dropped; image-gen/ASR are
+> covered comparably by MLPerf (sdxl/whisper) and embeddings by MTEB.
 
 > Status ✅ reflects work completed in `notebooks/aiaas-benchmarking/`
 > (some via open PRs). See `DOCS.md` → *Build status* for the PR mapping.
