@@ -135,8 +135,9 @@ compute_capability, cuda, driver, torch, python) and a `schema` string.
 - **`vllm-cost-model/1.0`** — `assumptions`, `results`: per-run `$/M` energy /
   hardware / total.
 
-`compare_results.py` reads the serving, MLPerf-training, and PoC schemas;
-`report.ipynb` reads the comparable schemas + model-swap.
+`compare_results.py` reads the serving, cross-framework, TensorRT-LLM,
+MLPerf-training, and PoC schemas; `report.ipynb` reads the comparable schemas +
+model-swap.
 
 ---
 
