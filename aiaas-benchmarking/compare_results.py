@@ -80,11 +80,15 @@ def main(argv):
         except Exception as e:
             print(f"skip {p}: {e}")
             continue
-        lbl = label(run)
         if run.get("schema", "").startswith("vllm-serving-bench"):
-            cols.setdefault(lbl, {}).update(flatten_vllm(run))
+            cols.setdefault(label(run), {}).update(flatten_vllm(run))
+        elif "tests" in run:
+            cols.setdefault(label(run), {}).update(flatten_poc(run))
         else:
-            cols.setdefault(lbl, {}).update(flatten_poc(run))
+            # e.g. the notebook's raw per-rate bench_rate_*.json files, which
+            # the README glob also matches — skip rather than emit a junk column.
+            print(f"skip {p}: unrecognized result schema")
+            continue
 
     if not cols:
         print("no usable result files")
