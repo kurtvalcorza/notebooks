@@ -52,14 +52,24 @@ def test_flatten_trtllm_best_concurrency():
     assert out["trtllm out tok/s (best)"] == 5000.0
 
 
-def test_flatten_train_keys():
-    run = {"model": "m", "method": "qlora",
-           "metrics": {"train_tokens_per_second": 1234.0, "peak_vram_gb": 12.0,
-                       "final_train_loss": 1.1}}
-    out = CR.flatten_train(run)
-    assert out["train tok/s"] == 1234.0
-    assert out["peak VRAM GB"] == 12.0
-    assert out["final loss"] == 1.1
+def test_flatten_mlperf_inference_keys():
+    run = {"model": "resnet50", "scenario": "Offline",
+           "loadgen_summary": {"Result is": "VALID", "Samples per second": 4200.0}}
+    out = CR.flatten_mlperf(run)
+    assert out["mlperf valid"] == "VALID"
+    assert out["mlperf QPS"] == 4200.0
+    assert out["mlperf scenario"] == "Offline"
+
+
+def test_flatten_mlperf_training_keys():
+    run = {"benchmark": "image_classification", "smoke": True,
+           "result": {"status": "ok"},
+           "metrics": {"throughput": 1234.0, "eval_accuracy": 0.76, "run_time_s": 42.0}}
+    out = CR.flatten_mlperf_training(run)
+    assert out["train benchmark"] == "image_classification"
+    assert out["throughput"] == 1234.0
+    assert out["eval_accuracy"] == 0.76
+    assert out["run_time s"] == 42.0
 
 
 def test_flatten_poc_keys():
@@ -76,12 +86,15 @@ def test_flatten_poc_keys():
 KNOWN = {
     "vllm": {"schema": "vllm-serving-bench/1.0", "env": {"gpu_name": "A100", "platform": "vllm"},
              "model": "m", "sweep": {"inf": {"output_throughput": 1}}},
-    "lora": {"schema": "lora-train-bench/1.0", "env": {"gpu_name": "A100", "platform": "lora"},
-             "model": "m", "metrics": {"train_tokens_per_second": 1}},
     "optimum": {"schema": "optimum-bench/1.0", "env": {"gpu_name": "A100", "platform": "optimum"},
                 "model": "m", "summary": {"pytorch": {"decode throughput": 1}}},
     "trtllm": {"schema": "trtllm-bench/1.0", "env": {"gpu_name": "A100", "platform": "trtllm"},
                "model": "m", "summary": {"8": {"out tok/s": 1}}},
+    "mlpinf": {"schema": "mlperf-inference/1.0", "env": {"gpu_name": "A100", "platform": "mlpinf"},
+               "model": "m", "scenario": "Offline", "loadgen_summary": {"Result is": "VALID"}},
+    "mlptrain": {"schema": "mlperf-training/1.0", "env": {"gpu_name": "A100", "platform": "mlptrain"},
+                 "benchmark": "image_classification", "result": {"status": "ok"},
+                 "metrics": {"throughput": 1}},
     "poc": {"env": {"gpu_name": "A100", "platform": "poc"},
             "tests": {"llm": {"ttft": {"p50_s": 0.5}, "tokens_per_s_p50": 1}}},
 }
@@ -95,7 +108,7 @@ def test_main_recognizes_every_known_schema(tmp_path, capsys):
     assert "unrecognized result schema" not in out
     assert "no usable result files" not in out
     # each schema produced its own column (distinct platform labels)
-    for plat in ("vllm", "lora", "optimum", "trtllm", "poc"):
+    for plat in ("vllm", "optimum", "trtllm", "mlpinf", "mlptrain", "poc"):
         assert plat in out
 
 

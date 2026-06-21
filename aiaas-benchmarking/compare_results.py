@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 """Compare benchmark result JSONs side-by-side across platforms.
 
-Reads result files produced by any of:
+Reads result files produced by:
   - the vLLM serving notebook (schema "vllm-serving-bench/1.0"),
-  - the LoRA/QLoRA training notebook (schema "lora-train-bench/1.0"),
   - the cross-framework notebook (schema "optimum-bench/1.0"),
-  - the TensorRT-LLM notebook (schema "trtllm-bench/1.0"), or
+  - the TensorRT-LLM notebook (schema "trtllm-bench/1.0"),
+  - the MLPerf Inference runner (schema "mlperf-inference/1.0"),
+  - the MLPerf Training runner (schema "mlperf-training/1.0"), or
   - the PoC proxy notebook (has top-level "tests"/"env").
 
 Usage:
-    python compare_results.py 'vllm_bench_results/*.json' 'lora_train_results/*.json'
+    python compare_results.py 'vllm_bench_results/*.json' \\
+        'mlperf_training_results/*.json'
 """
 import sys
 import glob
@@ -69,15 +71,17 @@ def flatten_optimum(run):
     }
 
 
-def flatten_train(run):
+def flatten_mlperf_training(run):
+    """MLPerf Training smoke/throughput signal (schema mlperf-training/1.0)."""
     m = run.get("metrics", {})
+    res = run.get("result", {})
     return {
-        "model": run.get("model"),
-        "method": run.get("method"),
-        "train tok/s": m.get("train_tokens_per_second"),
-        "train samp/s": m.get("train_samples_per_second"),
-        "peak VRAM GB": m.get("peak_vram_gb"),
-        "final loss": m.get("final_train_loss"),
+        "train benchmark": run.get("benchmark"),
+        "smoke": run.get("smoke"),
+        "train status": res.get("status"),
+        "throughput": m.get("throughput"),
+        "eval_accuracy": m.get("eval_accuracy"),
+        "run_time s": m.get("run_time_s"),
     }
 
 
@@ -152,8 +156,6 @@ def main(argv):
             continue
         if run.get("schema", "").startswith("vllm-serving-bench"):
             cols.setdefault(label(run), {}).update(flatten_vllm(run))
-        elif run.get("schema", "").startswith("lora-train-bench"):
-            cols.setdefault(label(run), {}).update(flatten_train(run))
         elif run.get("schema", "").startswith("optimum-bench"):
             cols.setdefault(label(run), {}).update(flatten_optimum(run))
         elif run.get("schema", "").startswith("trtllm-bench"):
@@ -164,6 +166,8 @@ def main(argv):
             # (later files overwrite earlier). Qualify the key with model/scenario.
             key = f"{label(run)} | {run.get('model', '?')}/{run.get('scenario', '?')}"
             cols.setdefault(key, {}).update(flatten_mlperf(run))
+        elif run.get("schema", "").startswith("mlperf-training"):
+            cols.setdefault(label(run), {}).update(flatten_mlperf_training(run))
         elif "tests" in run:
             cols.setdefault(label(run), {}).update(flatten_poc(run))
         else:

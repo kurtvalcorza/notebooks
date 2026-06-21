@@ -15,11 +15,11 @@ in PR #20 — not present until that merges.
 > Proxy-tier timings with no comparable harness were dropped; the NAIRA PoC v2
 > remains as the explicitly-labeled cross-platform proxy.
 >
-> **One live exception:** `lora_qlora_train_benchmark.ipynb` still ships on `main`
-> and is a labeled `Proxy` (there is no comparable LoRA fine-tune harness), so its
-> numbers are **not** externally comparable — treat them as internal-only. It is
-> removed in **PR #23**, replaced by the MLPerf Training runner. Until then the
-> "every notebook is comparable" claim above holds for everything *except* this one.
+> **On the dropped LoRA proxy:** `lora_qlora_train_benchmark.ipynb` was a labeled
+> `Proxy` (no comparable LoRA fine-tune harness exists), so its numbers were never
+> externally comparable. It has been **removed (PR #23)** and replaced by the
+> MLPerf Training runner (`mlperf_training_benchmark.ipynb`), so the
+> "every notebook is comparable" claim above now holds across the board.
 
 ---
 
@@ -58,11 +58,10 @@ writes a normalized result JSON to a `*_results/` folder, and prints a summary.
 | `vllm_serving_benchmark.ipynb` | LLM serving | Comparable | TTFT, TPOT/ITL, throughput (rate sweep) | `vllm-serving-bench/1.0` | T4+ | ✅ on `main` |
 | `tensorrt_llm_benchmark.ipynb` | LLM serving | Peak HW | TTFT, TPOT, throughput (concurrency sweep) | `trtllm-bench/1.0` | A100/Hopper | ✅ on `main` |
 | `optimum_crossframework_benchmark.ipynb` | LLM | Cross-framework | decode throughput, latency, VRAM per backend | `optimum-bench/1.0` | T4+ | ✅ on `main` |
-| `lora_qlora_train_benchmark.ipynb` | LLM fine-tune (proxy) | Proxy | train tok/s, samples/s, peak VRAM | `lora-train-bench/1.0` | T4+ | ⚠️ on `main`; dropped in #23 |
-| `mlperf_inference_benchmark.ipynb` | vision · sdxl · whisper | Standard | LoadGen QPS / latency / accuracy (VALID) | `mlperf-inference/1.0` | A100 | ⏳ PR #19 |
-| `mteb_benchmark.ipynb` | embeddings + reranking | Standard | MAP/MRR, Spearman, accuracy (leaderboard) | `mteb-bench/1.0` | any | ⏳ PR #22 |
-| `mlperf_training_benchmark.ipynb` | reference-model training | Standard | MLLog throughput / eval_accuracy / time | `mlperf-training/1.0` | cluster (smoke on 1) | ⏳ PR #23 (replaces LoRA) |
-| `model_swap_benchmark.ipynb` | multi-tenant systems | Systems | load/unload, cold-start tax, resident/peak VRAM, co-residency | `model-swap-bench/1.0` | T4+ | ⏳ PR #16 |
+| `mlperf_inference_benchmark.ipynb` | vision · sdxl · whisper | Standard | LoadGen QPS / latency / accuracy (VALID) | `mlperf-inference/1.0` | A100 | ✅ on `main` |
+| `mteb_benchmark.ipynb` | embeddings + reranking | Standard | MAP/MRR, Spearman, accuracy (leaderboard) | `mteb-bench/1.0` | any | ✅ on `main` |
+| `mlperf_training_benchmark.ipynb` | reference-model training | Standard | MLLog throughput / eval_accuracy / time | `mlperf-training/1.0` | cluster (smoke on 1) | ✅ on `main` (replaces LoRA) |
+| `model_swap_benchmark.ipynb` | multi-tenant systems | Systems | load/unload, cold-start tax, resident/peak VRAM, co-residency | `model-swap-bench/1.0` | T4+ | ✅ on `main` |
 | `cost_model.py` | — | Systems | `$/M-tokens` (energy + amortized HW) | `vllm-cost-model/1.0` | CPU | ✅ on `main` |
 | `compare_results.py` | — | — | cross-platform comparison table | — | CPU | ✅ on `main` |
 | `report.ipynb` | — | — | combined charted report over all schemas | — | CPU | ✅ on `main` |
@@ -78,14 +77,12 @@ Their comparable replacements: image-gen → MLPerf **sdxl**, ASR → MLPerf
 **MTEB**. VLM has no standardized perf harness, so it's out (the PoC covers VLM
 as a labeled proxy if needed).
 
-The **LoRA/QLoRA training proxy** is being replaced, not kept: it has no
-industry-comparable harness, so it is dropped in favor of the **MLPerf Training**
-runner (`mlperf_training_benchmark.ipynb`, the comparable harness) — this lands
-via **PR #23**. Until #23 merges, `lora_qlora_train_benchmark.ipynb` (schema
-`lora-train-bench/1.0`, read by `compare_results.flatten_train`) still ships on
-`main`; #23 removes the notebook and that code path together. The catalog above
-marks LoRA as ⚠️ (live, dropped in #23) and `mlperf_training_benchmark.ipynb` as
-its ⏳ pending replacement.
+The **LoRA/QLoRA training proxy** was replaced, not kept: it had no
+industry-comparable harness, so **PR #23 dropped it** in favor of the **MLPerf
+Training** runner (`mlperf_training_benchmark.ipynb`, the comparable harness).
+That PR removed both the notebook and its `lora-train-bench/1.0` code path in
+`compare_results.py` together, so neither the LoRA notebook nor its schema reader
+ships on `main` any longer.
 
 ### Build status (PRs into `main`)
 | PR | Adds / changes |
@@ -95,12 +92,12 @@ its ⏳ pending replacement.
 | #13 | `optimum_crossframework_benchmark.ipynb` — ✅ **merged** |
 | #14 | `tensorrt_llm_benchmark.ipynb` — ✅ **merged** |
 | #15 | `report.ipynb` — ✅ **merged** |
-| #16 | `model_swap_benchmark.ipynb` — ⏳ open |
-| #18 | `DOCS.md`, `SESSION_HANDOFF.md` — ⏳ open (this PR) |
-| #19 | `mlperf_inference_benchmark.ipynb` (LoadGen app + MLCFlow sdxl/whisper) — ⏳ open |
-| #20 | `docs/` per-notebook pages — ⏳ open |
-| #22 | `mteb_benchmark.ipynb` — ⏳ open |
-| #23 | `mlperf_training_benchmark.ipynb` (drops the LoRA proxy) — ⏳ open |
+| #16 | `model_swap_benchmark.ipynb` — ✅ **merged** |
+| #18 | `DOCS.md`, `SESSION_HANDOFF.md` — ✅ **merged** |
+| #19 | `mlperf_inference_benchmark.ipynb` (LoadGen app + MLCFlow sdxl/whisper) — ✅ **merged** |
+| #20 | `docs/` per-notebook pages — ✅ **merged** |
+| #22 | `mteb_benchmark.ipynb` — ✅ **merged** |
+| #23 | `mlperf_training_benchmark.ipynb` (drops the LoRA proxy + its `flatten_train` path) — ✅ **merged** |
 
 ---
 
@@ -129,7 +126,7 @@ its ⏳ pending replacement.
 Every **benchmark-run** output carries an `env` block (platform, gpu_name,
 gpu_count, vram_total_gb, cuda, driver, torch, python) and a `schema` string.
 `compute_capability` is **optional** — only `tensorrt_llm_benchmark.ipynb`
-records it today; the vLLM, optimum, and LoRA producers omit it, so treat it as
+records it today; the vLLM and optimum producers omit it, so treat it as
 optional when validating/normalizing. (Exception: `cost_model.py --json`
 (`vllm-cost-model/1.0`) is a post-processing output, not a benchmark run — it
 carries `schema`, `assumptions`, and `results` only, with **no** `env` block.)
@@ -153,9 +150,9 @@ carries `schema`, `assumptions`, and `results` only, with **no** `env` block.)
 - **`vllm-cost-model/1.0`** — `assumptions`, `results`: per-run `$/M` energy /
   hardware / total.
 
-`compare_results.py` reads the serving, LoRA/QLoRA training, cross-framework,
-TensorRT-LLM, and PoC schemas (PR #23 swaps the LoRA reader for the
-MLPerf-training schema); `report.ipynb` reads the comparable schemas +
+`compare_results.py` reads the serving, cross-framework, TensorRT-LLM, MLPerf
+inference, MLPerf training, and PoC schemas (PR #23 swapped the old LoRA reader
+for the MLPerf-training one); `report.ipynb` reads the comparable schemas +
 model-swap.
 
 ---
