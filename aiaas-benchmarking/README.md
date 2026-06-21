@@ -22,6 +22,10 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   reports standardized **TTFT / TPOT / throughput** percentiles you can line up
   against public vLLM numbers. VRAM-tiered (T4-anchor model vs A100 model),
   ungated Qwen2.5 models, graceful teardown.
+- **`mteb_benchmark.ipynb`** — the *standard* tier for retrieval. Runs **MTEB**
+  (the industry leaderboard) for **embeddings + reranking quality** (MAP/MRR,
+  Spearman, accuracy), so scores line up with the public MTEB leaderboard. The
+  quality counterpart to the embeddings throughput proxy.
 - **`lora_qlora_train_benchmark.ipynb`** — the *training* companion. Runs a
   fixed-budget LoRA / QLoRA supervised fine-tune of Qwen2.5 and reports **train
   tokens/s, samples/s, peak VRAM, and wall-time**. Same VRAM-tiered, ungated,
