@@ -45,27 +45,42 @@ DEFAULT_SPEC = (300, 10000.0)  # unknown GPU fallback
 
 
 def gpu_spec(name):
-    """(tdp_w, capex_usd) for a GPU by case-insensitive substring match."""
+    """(tdp_w, capex_usd) for a GPU by case-insensitive substring match.
+
+    Matches the LONGEST matching key so it's independent of dict order
+    (e.g. "a100" wins over "a10", "l40" over "l4").
+    """
     n = (name or "").lower()
-    for key, spec in GPU_DEFAULTS.items():
-        if key in n:
-            return spec
+    matches = [(k, s) for k, s in GPU_DEFAULTS.items() if k in n]
+    if matches:
+        return max(matches, key=lambda kv: len(kv[0]))[1]
     return DEFAULT_SPEC
 
 
 def pick_point(run):
-    """Max-throughput ('inf') sweep point if present, else the last one."""
-    sweep = run.get("sweep", {})
-    point = sweep.get("inf") or (list(sweep.values())[-1] if sweep else {})
-    return point if isinstance(point, dict) else {}
+    """The saturation (max-throughput) sweep point — chosen by actual
+    output_throughput, not by key name / insertion order. NOTE: this prices the
+    best-case ($/tok floor); it typically violates any TTFT/TPOT SLO, so treat it
+    as a floor, not an operating cost.
+    """
+    pts = [p for p in run.get("sweep", {}).values()
+           if isinstance(p, dict) and p.get("output_throughput")]
+    return max(pts, key=lambda p: p["output_throughput"], default={})
 
 
 def cost_per_m(throughput_tok_s, power_w, capex_usd, args):
-    """$/M-tokens broken into (energy, hardware, total) for one throughput."""
+    """$/M-tokens broken into (energy, hardware, total) for one throughput.
+
+    Both terms include the non-GPU node: capex via --server-overhead, and energy
+    via the same factor (CPU/RAM/chassis draw, typically +20-40% over the cards),
+    then PUE on top for facility overhead. Pass --server-overhead 1.0 for a
+    strict GPU-board-only figure.
+    """
     if not throughput_tok_s or throughput_tok_s <= 0:
         return None
     hours_per_m = (1e6 / throughput_tok_s) / 3600.0
-    energy = (power_w / 1000.0) * args.pue * hours_per_m * args.price
+    node_power_w = power_w * args.server_overhead
+    energy = (node_power_w / 1000.0) * args.pue * hours_per_m * args.price
     lifetime_h = args.amortization_years * 365 * 24
     hw_per_hour = capex_usd / (lifetime_h * args.util)
     hardware = hw_per_hour * hours_per_m
@@ -121,7 +136,8 @@ def main(argv):
     ap.add_argument("--util", type=float, default=0.5,
                     help="duty cycle: fraction of lifetime the box is productive (default 0.5)")
     ap.add_argument("--server-overhead", type=float, default=1.3,
-                    help="capex multiplier for CPU/RAM/chassis/networking on top of GPUs (default 1.3)")
+                    help="non-GPU node multiplier (CPU/RAM/chassis/networking) applied to BOTH "
+                         "capex and energy; default 1.3. Use 1.0 for GPU-board-only figures.")
     ap.add_argument("--power-watts", type=float, default=None,
                     help="measured per-GPU power (W); overrides the TDP estimate")
     ap.add_argument("--gpu-capex", type=float, default=None,
@@ -147,7 +163,8 @@ def main(argv):
     rows = []
     for p in paths:
         try:
-            run = json.load(open(p))
+            with open(p) as f:
+                run = json.load(f)
         except Exception as e:
             print(f"skip {p}: {e}")
             continue
