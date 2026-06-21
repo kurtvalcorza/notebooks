@@ -4,7 +4,8 @@
 Reads result files produced by any of:
   - the vLLM serving notebook (schema "vllm-serving-bench/1.0"),
   - the LoRA/QLoRA training notebook (schema "lora-train-bench/1.0"),
-  - the cross-framework notebook (schema "optimum-bench/1.0"), or
+  - the cross-framework notebook (schema "optimum-bench/1.0"),
+  - the TensorRT-LLM notebook (schema "trtllm-bench/1.0"), or
   - the PoC proxy notebook (has top-level "tests"/"env").
 
 Usage:
@@ -80,6 +81,21 @@ def flatten_train(run):
     }
 
 
+def flatten_trtllm(run):
+    """Best output throughput across concurrency points for a TensorRT-LLM run."""
+    best, bt = None, None
+    for c, m in run.get("summary", {}).items():
+        if isinstance(m, dict):
+            t = m.get("out tok/s")
+            if isinstance(t, (int, float)) and (bt is None or t > bt):
+                bt, best = t, c
+    return {
+        "model": run.get("model"),
+        "trtllm out tok/s (best)": bt,
+        "trtllm best concurrency": best,
+    }
+
+
 def flatten_poc(run):
     t = run.get("tests", {})
     out = {}
@@ -120,6 +136,8 @@ def main(argv):
             cols.setdefault(label(run), {}).update(flatten_train(run))
         elif run.get("schema", "").startswith("optimum-bench"):
             cols.setdefault(label(run), {}).update(flatten_optimum(run))
+        elif run.get("schema", "").startswith("trtllm-bench"):
+            cols.setdefault(label(run), {}).update(flatten_trtllm(run))
         elif "tests" in run:
             cols.setdefault(label(run), {}).update(flatten_poc(run))
         else:
