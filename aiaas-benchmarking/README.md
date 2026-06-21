@@ -21,6 +21,8 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   JSON schemas, aggregation/reporting, cost methodology, metrics glossary, the
   fork workflow, and troubleshooting.
 - **`SESSION_HANDOFF.md`** — the original kickoff plan (goal, tiers, forks).
+- **`docs/`** — deep per-notebook reference (one page each: config knobs, run
+  steps, output schema, how to read results). Start at `docs/README.md`.
 - **`vllm_serving_benchmark.ipynb`** — the *comparable* tier. Runs a real vLLM
   OpenAI server + `bench serve` over ShareGPT with a request-rate sweep, and
   reports standardized **TTFT / TPOT / throughput** percentiles you can line up
