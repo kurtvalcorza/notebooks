@@ -143,6 +143,7 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 - [x] **TensorRT-LLM** peak-ceiling notebook added (`tensorrt_llm_benchmark.ipynb`,
       `trtllm-bench` PyTorch backend). Runs need the `TensorRT-LLM` fork session
       on an A100/Hopper GPU.
-- [ ] **Cost model** — collect power (DCGM) + amortized HW for $/M-tokens.
+- [x] **Cost model** — `$/M-tokens` from power + amortized HW added
+      (`cost_model.py`). Refine with measured DCGM power via `--power-watts`.
 - [x] **Training track** — portable LoRA/QLoRA fine-tune benchmark added
       (`lora_qlora_train_benchmark.ipynb`). Still to run on A100 + Colab.

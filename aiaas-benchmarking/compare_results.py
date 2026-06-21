@@ -64,6 +64,21 @@ def flatten_train(run):
     }
 
 
+def flatten_trtllm(run):
+    """Best output throughput across concurrency points for a TensorRT-LLM run."""
+    best, bt = None, None
+    for c, m in run.get("summary", {}).items():
+        if isinstance(m, dict):
+            t = m.get("out tok/s")
+            if isinstance(t, (int, float)) and (bt is None or t > bt):
+                bt, best = t, c
+    return {
+        "model": run.get("model"),
+        "trtllm out tok/s (best)": bt,
+        "trtllm best concurrency": best,
+    }
+
+
 def flatten_poc(run):
     t = run.get("tests", {})
     out = {}
