@@ -60,11 +60,19 @@ writes a normalized result JSON to a `*_results/` folder, and prints a summary.
 | `report.ipynb` | — | — | combined charted report over all schemas | — | CPU |
 
 ### Dropped (no industry-comparable harness)
-LoRA-training, embeddings-throughput, image-gen, ASR, and VLM **proxy** notebooks
-were removed. Their comparable replacements: image-gen → MLPerf **sdxl**, ASR →
-MLPerf **whisper** (both in `mlperf_inference_benchmark` via MLCFlow), embeddings →
-**MTEB**. VLM and LoRA-fine-tuning have no standardized perf harness, so they're
-out (the PoC covers VLM as a labeled proxy if needed).
+Embeddings-throughput, image-gen, ASR, and VLM **proxy** notebooks were removed.
+Their comparable replacements: image-gen → MLPerf **sdxl**, ASR → MLPerf
+**whisper** (both in `mlperf_inference_benchmark` via MLCFlow), embeddings →
+**MTEB**. VLM has no standardized perf harness, so it's out (the PoC covers VLM
+as a labeled proxy if needed).
+
+The **LoRA/QLoRA training proxy** is being replaced, not kept: it has no
+industry-comparable harness, so it is dropped in favor of the **MLPerf Training**
+runner (`mlperf_training_benchmark.ipynb`, the comparable harness) — this lands
+via **PR #23**. Until #23 merges, `lora_qlora_train_benchmark.ipynb` (schema
+`lora-train-bench/1.0`, read by `compare_results.flatten_train`) still ships on
+`main`; #23 removes the notebook and that code path together. The catalog and
+schema tables above describe the post-#23 state.
 
 ### Build status (PRs into `main`)
 | PR | Adds / changes |
@@ -127,8 +135,8 @@ compute_capability, cuda, driver, torch, python) and a `schema` string.
 - **`vllm-cost-model/1.0`** — `assumptions`, `results`: per-run `$/M` energy /
   hardware / total.
 
-`compare_results.py` reads the serving + PoC schemas; `report.ipynb` reads the
-comparable schemas + model-swap.
+`compare_results.py` reads the serving, MLPerf-training, and PoC schemas;
+`report.ipynb` reads the comparable schemas + model-swap.
 
 ---
 
