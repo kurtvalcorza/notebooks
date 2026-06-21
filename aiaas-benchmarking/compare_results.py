@@ -2,11 +2,13 @@
 """Compare benchmark result JSONs side-by-side across platforms.
 
 Reads result files produced by:
-  - the vLLM serving notebook (schema "vllm-serving-bench/1.0"), or
+  - the vLLM serving notebook (schema "vllm-serving-bench/1.0"),
+  - the MLPerf Training runner (schema "mlperf-training/1.0"), or
   - the PoC proxy notebook (has top-level "tests"/"env").
 
 Usage:
-    python compare_results.py 'vllm_bench_results/*.json'
+    python compare_results.py 'vllm_bench_results/*.json' \\
+        'mlperf_training_results/*.json'
 """
 import sys
 import glob
@@ -51,6 +53,20 @@ def flatten_vllm(run):
     }
 
 
+def flatten_mlperf_training(run):
+    """MLPerf Training smoke/throughput signal (schema mlperf-training/1.0)."""
+    m = run.get("metrics", {})
+    res = run.get("result", {})
+    return {
+        "train benchmark": run.get("benchmark"),
+        "smoke": run.get("smoke"),
+        "train status": res.get("status"),
+        "throughput": m.get("throughput"),
+        "eval_accuracy": m.get("eval_accuracy"),
+        "run_time s": m.get("run_time_s"),
+    }
+
+
 def flatten_poc(run):
     t = run.get("tests", {})
     out = {}
@@ -87,6 +103,8 @@ def main(argv):
             continue
         if run.get("schema", "").startswith("vllm-serving-bench"):
             cols.setdefault(label(run), {}).update(flatten_vllm(run))
+        elif run.get("schema", "").startswith("mlperf-training"):
+            cols.setdefault(label(run), {}).update(flatten_mlperf_training(run))
         elif "tests" in run:
             cols.setdefault(label(run), {}).update(flatten_poc(run))
         else:

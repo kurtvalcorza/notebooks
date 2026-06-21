@@ -30,6 +30,9 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   industry-comparable harness.)
 - **`compare_results.py`** — side-by-side table across platforms; reads the vLLM
   serving JSONs and the PoC proxy notebook JSONs.
+- **`cost_model.py`** — turns the vLLM serving throughput into **$/M-tokens**,
+  split into energy (power draw × PUE × electricity price) and amortized hardware
+  (capex over a utilized lifetime). Per-GPU power/capex defaults, all overridable.
 
 > Your existing **NAIRA PoC v2** notebook is the *proxy* tier — a good
 > cross-platform hardware feel, but not comparable to industry numbers (see the
@@ -42,9 +45,10 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
 2. Run top to bottom. It auto-selects the model by VRAM, downloads ShareGPT,
    launches the server, runs the sweep, and writes
    `vllm_bench_results/vllm_serving_<platform>_<gpu>.json`.
-3. Repeat on each platform, collect the JSONs, then:
+3. Repeat on each platform, collect the JSONs, then compare and cost them:
    ```bash
    python compare_results.py 'vllm_bench_results/*.json'
+   python cost_model.py 'vllm_bench_results/*.json' --price 0.12 --util 0.5
    ```
 
 > vLLM brings its own CUDA-matched torch; on Colab the install may require a
@@ -56,5 +60,6 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
 - MLPerf `llama3.1-8b` / `resnet50` / `whisper` / `sdxl` runs → in the
   `inference` repo (accuracy-gated, leaderboard-comparable).
 - TensorRT-LLM (peak A100 ceiling) and optimum-benchmark (cross-framework).
-- Cost model ($/M-tokens from power + amortized HW).
-- ~~LoRA/QLoRA training benchmark~~ — added (`lora_qlora_train_benchmark.ipynb`).
+- ~~Cost model ($/M-tokens from power + amortized HW)~~ — added (`cost_model.py`).
+- ~~MLPerf Training runner~~ — added (`mlperf_training_benchmark.ipynb`); the
+  earlier LoRA/QLoRA proxy was dropped as non-comparable.

@@ -111,9 +111,10 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
   `llama3.1-8b`, `whisper` (Offline + Server scenarios).
 - **Phase 3 — Capacity + cost model.** Combine curves into users-per-model at
   SLA; derive $/M-tokens and $/image; document model-swap latency.
-- **Training track.** LoRA/QLoRA fine-tune of an 8B model: tokens/s, samples/s,
-  time-to-target-loss, peak VRAM. (Full MLPerf Training is overkill for one
-  40 GB card.)
+- **Training track.** **MLPerf Training** reference runs (the comparable harness)
+  via `mlperf_training_benchmark.ipynb`. On one 40 GB card this is a
+  smoke/throughput signal only — full to-target runs are cluster-scale. (The
+  earlier LoRA/QLoRA proxy was dropped as non-comparable.)
 
 ---
 
@@ -140,7 +141,8 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
       expected numbers).
 - [ ] **MLPerf subset run** on the A100 (Phase 2).
 - [ ] **optimum-benchmark** cross-framework run (needs fork session).
-- [ ] **Cost model** — collect power (DCGM) + amortized HW for $/M-tokens.
+- [x] **Cost model** — `$/M-tokens` from power + amortized HW added
+      (`cost_model.py`). Refine with measured DCGM power via `--power-watts`.
 - [~] **Training track** — upgraded from the LoRA/QLoRA proxy (dropped, not
       industry-comparable) to a **MLPerf Training** runner
       (`mlperf_training_benchmark.ipynb`, references the `training` fork). Credible
