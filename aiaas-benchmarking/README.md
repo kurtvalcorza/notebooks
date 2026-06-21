@@ -39,6 +39,10 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   reporting decode throughput / latency / VRAM per backend so the only variable is
   the runtime — **precision matched at fp16** (PyTorch fp16, ORT auto-optimization
   O4). (Runs belong in a fork session scoped to `optimum-benchmark`; the notebook is portable.)
+- **`model_swap_benchmark.ipynb`** — the *systems* companion. Measures per-workload
+  **load / unload time, cold-start tax, and resident/peak VRAM**, then gives a
+  **co-residency verdict** (do LLM + embeddings + image-gen fit in the GPU at once?)
+  and the **swap cost** when they don't. Targets the 40 GB binding constraint.
 - **`compare_results.py`** — side-by-side table across platforms; reads the vLLM
   serving JSONs, the LoRA/QLoRA training JSONs, the cross-framework JSONs, and the
   PoC proxy notebook JSONs.
