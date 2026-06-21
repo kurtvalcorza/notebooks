@@ -123,7 +123,11 @@ def main(argv):
         elif run.get("schema", "").startswith("lora-train-bench"):
             cols.setdefault(label(run), {}).update(flatten_train(run))
         elif run.get("schema", "").startswith("mlperf-inference"):
-            cols.setdefault(label(run), {}).update(flatten_mlperf(run))
+            # MLPerf writes one JSON per model/scenario on the same host, so keying
+            # on the gpu/platform label alone collapses the suite into one column
+            # (later files overwrite earlier). Qualify the key with model/scenario.
+            key = f"{label(run)} | {run.get('model', '?')}/{run.get('scenario', '?')}"
+            cols.setdefault(key, {}).update(flatten_mlperf(run))
         elif "tests" in run:
             cols.setdefault(label(run), {}).update(flatten_poc(run))
         else:
