@@ -20,6 +20,22 @@ def label(run):
     return f"{gpu} ({plat})"
 
 
+def p99(point, metric):
+    """p99 for a metric from a vLLM bench-serve point.
+
+    Current vLLM writes flat keys (`p99_ttft_ms`); older / customized runs may
+    instead carry `percentiles_ttft_ms` as a list of [percentile, value] pairs.
+    Support both so the SLA columns don't render blank.
+    """
+    flat = point.get(f"p99_{metric}_ms")
+    if flat is not None:
+        return flat
+    for p, v in point.get(f"percentiles_{metric}_ms", []) or []:
+        if int(p) == 99:
+            return v
+    return None
+
+
 def flatten_vllm(run):
     """Pick the max-throughput ('inf') sweep point if present, else the last."""
     sweep = run.get("sweep", {})
@@ -30,8 +46,8 @@ def flatten_vllm(run):
         "model": run.get("model"),
         "out tok/s (max)": point.get("output_throughput"),
         "req/s (max)": point.get("request_throughput"),
-        "TTFT p99 ms": point.get("p99_ttft_ms"),
-        "TPOT p99 ms": point.get("p99_tpot_ms"),
+        "TTFT p99 ms": p99(point, "ttft"),
+        "TPOT p99 ms": p99(point, "tpot"),
     }
 
 
