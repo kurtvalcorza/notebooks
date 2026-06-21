@@ -13,6 +13,12 @@ timing notebook isn't industry-comparable, the 40 GB fit table, phases), read
 > published numbers use* (vLLM, TensorRT-LLM, optimum-benchmark, MLPerf, MTEB).
 > Proxy-tier timings with no comparable harness were dropped; the NAIRA PoC v2
 > remains as the explicitly-labeled cross-platform proxy.
+>
+> **One live exception:** `lora_qlora_train_benchmark.ipynb` still ships on `main`
+> and is a labeled `Proxy` (there is no comparable LoRA fine-tune harness), so its
+> numbers are **not** externally comparable — treat them as internal-only. It is
+> removed in **PR #23**, replaced by the MLPerf Training runner. Until then the
+> "every notebook is comparable" claim above holds for everything *except* this one.
 
 ---
 
@@ -119,8 +125,11 @@ its ⏳ pending replacement.
 
 ## 5. Result JSON schemas
 
-All carry an `env` block (platform, gpu_name, gpu_count, vram_total_gb,
-compute_capability, cuda, driver, torch, python) and a `schema` string.
+Every **benchmark-run** output carries an `env` block (platform, gpu_name,
+gpu_count, vram_total_gb, compute_capability, cuda, driver, torch, python) and a
+`schema` string. (Exception: `cost_model.py --json` (`vllm-cost-model/1.0`) is a
+post-processing output, not a benchmark run — it carries `schema`, `assumptions`,
+and `results` only, with **no** `env` block.)
 
 - **`vllm-serving-bench/1.0`** — `model`, `tensor_parallel_size`, `request_rates`,
   `sweep`: {rate → `output_throughput`, `request_throughput`, `p99_ttft_ms`,
