@@ -45,9 +45,10 @@ If empty, infer the primary code/notebook area from the repo layout.
 5. **Verify locally** before committing: run the same validation + tests you put
    in CI and confirm they pass (and that a deliberately broken input fails).
 
-6. **Commit on a feature branch, push, open a draft PR.** Do NOT push to the
-   default branch. In the PR body, list exactly what the gate checks and what it
-   deliberately does NOT (the heavy/real runs).
+6. **Commit on a feature branch, push, open a draft PR** (reuse the branch's
+   existing PR if one is already open instead of creating a duplicate). Do NOT
+   push to the default branch. In the PR body, list exactly what the gate checks
+   and what it deliberately does NOT (the heavy/real runs).
 
 ## Portability note
 Keep the workflow and tests generic enough to copy into sibling repos: isolate

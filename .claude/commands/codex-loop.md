@@ -7,7 +7,8 @@ Run a disciplined **AI code-review loop** on a pull request until it comes back
 clean. Reviewer is Codex (`@codex review`); adapt if the repo uses a different
 review bot.
 
-Target PR: `$ARGUMENTS` (if empty, resolve the PR for the current branch).
+Target PR: `$ARGUMENTS` (if empty, resolve the PR for the current branch; if the
+branch has no PR yet, push it and open a draft PR first, then loop on that).
 
 ## The loop
 1. **Pre-flight.** Confirm the PR is up to date with the base branch; if it has

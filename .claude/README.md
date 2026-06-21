@@ -11,8 +11,8 @@ Custom slash commands for this repo. Type `/<name>` in Claude Code to run one.
 These are **project** commands (live in `.claude/commands/`, shared with anyone
 who clones this repo). To make them available everywhere:
 
-- **Per repo / for a team:** copy this `.claude/commands/` folder into the other
-  repo and commit it.
+- **Per repo / for a team:** copy `.claude/commands/` (and, if you want this
+  reference along with it, `.claude/README.md`) into the other repo and commit it.
 - **For yourself across all repos:** copy the `*.md` files into
   `~/.claude/commands/` on your machine — then `/setup-bench-ci` and `/codex-loop`
   work in every repo you open locally. (Note: on the ephemeral *remote* Claude
