@@ -6,7 +6,8 @@ single **A100 (40 GB)** server and comparing it against cloud notebook services
 
 This is the reference manual. For the *why* (tiers, the five reasons a homemade
 timing notebook isn't industry-comparable, the 40 GB fit table, phases), read
-**`BENCHMARKING_STRATEGY.md`** first. For deep per-notebook pages see **`docs/`**.
+**`BENCHMARKING_STRATEGY.md`** first. Deep per-notebook pages (**`docs/`**) land
+in PR #20 — not present until that merges.
 
 > **Design principle:** every benchmark notebook in this package is
 > **industry/community-comparable** — it runs the *same standardized harness the
@@ -126,10 +127,12 @@ its ⏳ pending replacement.
 ## 5. Result JSON schemas
 
 Every **benchmark-run** output carries an `env` block (platform, gpu_name,
-gpu_count, vram_total_gb, compute_capability, cuda, driver, torch, python) and a
-`schema` string. (Exception: `cost_model.py --json` (`vllm-cost-model/1.0`) is a
-post-processing output, not a benchmark run — it carries `schema`, `assumptions`,
-and `results` only, with **no** `env` block.)
+gpu_count, vram_total_gb, cuda, driver, torch, python) and a `schema` string.
+`compute_capability` is **optional** — only `tensorrt_llm_benchmark.ipynb`
+records it today; the vLLM, optimum, and LoRA producers omit it, so treat it as
+optional when validating/normalizing. (Exception: `cost_model.py --json`
+(`vllm-cost-model/1.0`) is a post-processing output, not a benchmark run — it
+carries `schema`, `assumptions`, and `results` only, with **no** `env` block.)
 
 - **`vllm-serving-bench/1.0`** — `model`, `tensor_parallel_size`, `request_rates`,
   `sweep`: {rate → `output_throughput`, `request_throughput`, `p99_ttft_ms`,
