@@ -26,6 +26,15 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   reports standardized **TTFT / TPOT / throughput** percentiles you can line up
   against public vLLM numbers. VRAM-tiered (T4-anchor model vs A100 model),
   ungated Qwen2.5 models, graceful teardown.
+- **`mlperf_inference_benchmark.ipynb`** — the *standard* tier. Portable bridge to
+  **MLPerf Inference**. Two paths: (a) the fork's LoadGen reference app for vision
+  classification/detection (mobilenet/resnet50/retinanet), modeled on the fork's
+  `GettingStarted.ipynb`; and (b) an **MLCFlow** path that runs the **whole MLPerf
+  Inference suite** as a configurable model list — resnet50, retinanet, bert,
+  3d-unet, dlrm, gptj, **sdxl**, **whisper**, llama3.1-8b, … (incl. the comparable
+  upgrades for the dropped image-gen and ASR proxies). Runs under a LoadGen
+  scenario with the accuracy gate; smoke defaults, real datasets /
+  `execution_mode=valid` for credible runs.
 - **`mteb_benchmark.ipynb`** — the *standard* tier for retrieval. Runs **MTEB**
   (the industry leaderboard) for **embeddings + reranking quality** (MAP/MRR,
   Spearman, accuracy), so scores line up with the public MTEB leaderboard. The
@@ -52,8 +61,8 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   **co-residency verdict** (do LLM + embeddings + image-gen fit in the GPU at once?)
   and the **swap cost** when they don't. Targets the 40 GB binding constraint.
 - **`compare_results.py`** — side-by-side table across platforms; reads the vLLM
-  serving JSONs, the LoRA/QLoRA training JSONs, the cross-framework JSONs, and the
-  PoC proxy notebook JSONs.
+  serving JSONs, the LoRA/QLoRA training JSONs, the cross-framework and
+  TensorRT-LLM JSONs, the MLPerf inference JSONs, and the PoC proxy notebook JSONs.
 - **`cost_model.py`** — turns the vLLM serving throughput into **$/M-tokens**,
   split into energy (power draw × PUE × electricity price) and amortized hardware
   (capex over a utilized lifetime). Per-GPU power/capex defaults, all overridable.
