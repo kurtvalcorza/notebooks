@@ -27,8 +27,15 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   tokens/s, samples/s, peak VRAM, and wall-time**. Same VRAM-tiered, ungated,
   fixed-step design so a Colab T4 and an A100 are directly comparable (QLoRA is
   the portable anchor that fits a T4).
+- **`optimum_crossframework_benchmark.ipynb`** — the *cross-framework* tier. Runs
+  one model through **PyTorch vs ONNX Runtime (CUDA)** (plus the **ONNX Runtime
+  TensorRT EP when the platform exposes it**) with HuggingFace `optimum-benchmark`,
+  reporting decode throughput / latency / VRAM per backend so the only variable is
+  the runtime — **precision matched at fp16** (PyTorch fp16, ORT auto-optimization
+  O4). (Runs belong in a fork session scoped to `optimum-benchmark`; the notebook is portable.)
 - **`compare_results.py`** — side-by-side table across platforms; reads the vLLM
-  serving JSONs, the LoRA/QLoRA training JSONs, and the PoC proxy notebook JSONs.
+  serving JSONs, the LoRA/QLoRA training JSONs, the cross-framework JSONs, and the
+  PoC proxy notebook JSONs.
 - **`cost_model.py`** — turns the vLLM serving throughput into **$/M-tokens**,
   split into energy (power draw × PUE × electricity price) and amortized hardware
   (capex over a utilized lifetime). Per-GPU power/capex defaults, all overridable.
@@ -58,6 +65,7 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
 
 - MLPerf `llama3.1-8b` / `resnet50` / `whisper` / `sdxl` runs → in the
   `inference` repo (accuracy-gated, leaderboard-comparable).
-- TensorRT-LLM (peak A100 ceiling) and optimum-benchmark (cross-framework).
+- TensorRT-LLM (peak A100 ceiling).
+- ~~optimum-benchmark (cross-framework)~~ — added (`optimum_crossframework_benchmark.ipynb`).
 - ~~Cost model ($/M-tokens from power + amortized HW)~~ — added (`cost_model.py`).
 - ~~LoRA/QLoRA training benchmark~~ — added (`lora_qlora_train_benchmark.ipynb`).
