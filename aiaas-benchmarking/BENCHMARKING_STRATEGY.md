@@ -140,6 +140,9 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
       expected numbers).
 - [ ] **MLPerf subset run** on the A100 (Phase 2).
 - [ ] **optimum-benchmark** cross-framework run (needs fork session).
+- [x] **TensorRT-LLM** peak-ceiling notebook added (`tensorrt_llm_benchmark.ipynb`,
+      `trtllm-bench` PyTorch backend). Runs need the `TensorRT-LLM` fork session
+      on an A100/Hopper GPU.
 - [ ] **Cost model** — collect power (DCGM) + amortized HW for $/M-tokens.
 - [x] **Training track** — portable LoRA/QLoRA fine-tune benchmark added
       (`lora_qlora_train_benchmark.ipynb`). Still to run on A100 + Colab.
