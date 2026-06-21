@@ -18,5 +18,11 @@ manual see `../DOCS.md`; for the *why* see `../BENCHMARKING_STRATEGY.md`.
 image-gen, ASR, and VLM proxies — image-gen/ASR are covered comparably by MLPerf
 (`sdxl`/`whisper`) and embeddings by MTEB. The NAIRA PoC v2 stays as the labeled cross-platform proxy.
 
+> **LoRA transition (PR #23).** The LoRA/QLoRA proxy is *replaced* by the MLPerf
+> Training runner above (the comparable harness), so it has no page here. The drop
+> lands via **PR #23**; until that merges, `lora_qlora_train_benchmark.ipynb` still
+> ships on `main` and is documented in the root `README.md`. This index describes
+> the post-#23 state.
+
 Aggregation/economics tooling (not benchmarks): `../compare_results.py`, `../cost_model.py`,
 `../report.ipynb` — see `../DOCS.md` §6.

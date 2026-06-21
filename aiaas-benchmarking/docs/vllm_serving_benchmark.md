@@ -18,7 +18,7 @@ Runs a real vLLM OpenAI server driven by vLLM's `bench serve` load generator ove
 | `DTYPE` | auto/half | fp16 on pre-Ampere |
 | `DATASET` | sharegpt | or random |
 | `NUM_PROMPTS` | 300 | per sweep point |
-| `REQUEST_RATES` | [4,16,inf] | req/s sweep |
+| `REQUEST_RATES` | `[4, 16, "inf"]` | req/s sweep (`"inf"` = saturate / max throughput) |
 | `TP_SIZE` | 1 | tensor-parallel; recorded for the cost model |
 
 ## How to run
