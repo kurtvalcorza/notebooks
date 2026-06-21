@@ -134,11 +134,12 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 
 - [ ] **Colab-ready portable notebook** — superseded by the existing NAIRA PoC
       v2 notebook (good proxy). Re-evaluate if we want a cleaned/merged version.
-- [ ] **vLLM serving benchmark notebook** — added in this PR
-      (`vllm_serving_benchmark.ipynb`). Run on A100 + Colab.
+- [x] **vLLM serving benchmark notebook** — added
+      (`vllm_serving_benchmark.ipynb`). Still to run on A100 + Colab.
 - [ ] **Confirm A100 SKU** — SXM vs PCIe, 40 vs 80 GB (changes the fit table and
       expected numbers).
 - [ ] **MLPerf subset run** on the A100 (Phase 2).
 - [ ] **optimum-benchmark** cross-framework run (needs fork session).
 - [ ] **Cost model** — collect power (DCGM) + amortized HW for $/M-tokens.
-- [ ] **Training track** — LoRA/QLoRA 8B fine-tune benchmark.
+- [x] **Training track** — portable LoRA/QLoRA fine-tune benchmark added
+      (`lora_qlora_train_benchmark.ipynb`). Still to run on A100 + Colab.
