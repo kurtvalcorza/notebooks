@@ -3,6 +3,8 @@
 
 Reads result files produced by:
   - the vLLM serving notebook (schema "vllm-serving-bench/1.0"),
+  - the cross-framework notebook (schema "optimum-bench/1.0"),
+  - the TensorRT-LLM notebook (schema "trtllm-bench/1.0"),
   - the MLPerf Training runner (schema "mlperf-training/1.0"), or
   - the PoC proxy notebook (has top-level "tests"/"env").
 
@@ -53,6 +55,21 @@ def flatten_vllm(run):
     }
 
 
+def flatten_optimum(run):
+    """Best decode throughput across backends for a cross-framework run."""
+    best, best_tps = None, None
+    for backend, m in run.get("summary", {}).items():
+        if isinstance(m, dict):
+            t = m.get("decode throughput")
+            if isinstance(t, (int, float)) and (best_tps is None or t > best_tps):
+                best_tps, best = t, backend
+    return {
+        "model": run.get("model"),
+        "optimum best tok/s": best_tps,
+        "optimum best backend": best,
+    }
+
+
 def flatten_mlperf_training(run):
     """MLPerf Training smoke/throughput signal (schema mlperf-training/1.0)."""
     m = run.get("metrics", {})
@@ -64,6 +81,21 @@ def flatten_mlperf_training(run):
         "throughput": m.get("throughput"),
         "eval_accuracy": m.get("eval_accuracy"),
         "run_time s": m.get("run_time_s"),
+    }
+
+
+def flatten_trtllm(run):
+    """Best output throughput across concurrency points for a TensorRT-LLM run."""
+    best, bt = None, None
+    for c, m in run.get("summary", {}).items():
+        if isinstance(m, dict):
+            t = m.get("out tok/s")
+            if isinstance(t, (int, float)) and (bt is None or t > bt):
+                bt, best = t, c
+    return {
+        "model": run.get("model"),
+        "trtllm out tok/s (best)": bt,
+        "trtllm best concurrency": best,
     }
 
 
@@ -103,6 +135,10 @@ def main(argv):
             continue
         if run.get("schema", "").startswith("vllm-serving-bench"):
             cols.setdefault(label(run), {}).update(flatten_vllm(run))
+        elif run.get("schema", "").startswith("optimum-bench"):
+            cols.setdefault(label(run), {}).update(flatten_optimum(run))
+        elif run.get("schema", "").startswith("trtllm-bench"):
+            cols.setdefault(label(run), {}).update(flatten_trtllm(run))
         elif run.get("schema", "").startswith("mlperf-training"):
             cols.setdefault(label(run), {}).update(flatten_mlperf_training(run))
         elif "tests" in run:
