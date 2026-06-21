@@ -1,41 +1,40 @@
 # MLPerf Inference Runner
 
-**Notebook:** `mlperf_inference_benchmark.ipynb` · **Tier:** Standard · **Workload:** Vision (class./detection) · **GPU:** A100 (heavy)
+**Notebook:** `mlperf_inference_benchmark.ipynb` · **Tier:** Standard · **Workload:** Vision · SDXL · whisper · **GPU:** A100 (heavy)
 
-Portable bridge to MLPerf Inference: clones the `kurtvalcorza/inference` fork, builds LoadGen + the reference app, and runs the vision classification/detection benchmark under a LoadGen scenario with the accuracy gate. Modeled on the fork's `GettingStarted.ipynb`.
+Portable bridge to MLPerf Inference. Two paths: (a) the `kurtvalcorza/inference` fork's LoadGen reference app for vision classification/detection (modeled on its `GettingStarted.ipynb`); and (b) an **MLCFlow** path for any model — incl. **sdxl** (comparable image-gen) and **whisper** (comparable ASR).
 
 ## What it measures
-- Official **`mlperf_log_summary.txt`** — QPS/throughput, latency percentiles, VALID
-- **Accuracy** (Top-1 for resnet50, mAP for retinanet)
-- LoadGen **scenario** (Offline / Server / SingleStream / MultiStream)
+- Official `mlperf_log_summary.txt` — QPS/throughput, latency percentiles, **VALID**
+- **Accuracy** (Top-1 / mAP / etc., the gate)
+- LoadGen **scenario** (Offline/Server/SingleStream)
 
 ## Configuration
 
 | Knob | Default | Notes |
 |------|---------|-------|
-| `MODEL` | mobilenet (smoke) / resnet50 / retinanet | smoke default = mobilenet + fake imagenet |
-| `BACKEND / DEVICE` | onnxruntime / gpu | ORT-GPU on a GPU |
-| `SCENARIO` | Offline | Offline/Server datacenter; SingleStream/MultiStream edge |
-| `ACCURACY` | True | also run the accuracy pass (the gate) |
-| `DATASET_MODE / DATA_DIR` | fake / '' | set 'real' + DATA_DIR for ImageNet/OpenImages |
-| `EXTRA_OPS` | --time 10 … (smoke) | drop for a full VALID run |
+| `MODEL (path a)` | mobilenet/resnet50/retinanet | smoke=mobilenet+fake imagenet |
+| `MLC_MODEL (path b)` | sdxl / whisper / … | MLCFlow universal runner |
+| `SCENARIO` | Offline |  |
+| `ACCURACY / execution_mode` | True / test | `valid` for submission-grade |
+| `DATASET_MODE / DATA_DIR` | fake / '' | real ImageNet/OpenImages for credible |
 | `REPO_URL` | kurtvalcorza/inference | the Standard-tier fork |
 
 ## How to run
-1. Clones the fork (`--recurse-submodules`), builds LoadGen + the app, installs the backend.
-2. Downloads the model, prepares the dataset (fake smoke / real), runs `run_local.sh`, parses the LoadGen summary.
+1. Path a: clone fork, build LoadGen+app, `run_local.sh ... --accuracy`.
+2. Path b: `pip install cm4mlops`; `cmr run-mlperf,inference --model=sdxl|whisper ...`.
 
 ## Output
 
-Writes `mlperf_results/<name>_<platform>_<gpu>.json` with schema **`mlperf-inference/1.0`** (see `../DOCS.md` §5 for the field reference) and prints a summary table.
+Writes `mlperf_results/...json` with schema **`mlperf-inference/1.0`** (field reference in `../DOCS.md` §5) and prints a summary table.
 
 ## How to read the results
 
-Check `Result is VALID`, the QPS/throughput, the latency percentiles, and the accuracy vs the gate. Smoke runs are not VALID (shortened) — for credible numbers use real datasets + drop EXTRA_OPS, or the MLCFlow path (`mlcr run-mlperf-inference-app …`).
+Check `Result is VALID`, QPS, latency percentiles, accuracy vs the gate. Smoke runs are not VALID — use real datasets + `execution_mode=valid` (or the MLCFlow path) for credible numbers.
 
 ## Caveats
-- Heavy: clones+builds the fork, needs a dataset; really wants the A100.
-- MLPerf field names drift across versions — parsing is defensive.
-- Credible/submission-grade runs belong in an `inference`-scoped session.
+- Heavy: clones/builds the fork, needs datasets; wants the A100.
+- MLPerf/MLCFlow field names drift — parsing is defensive.
+- Credible/submission runs belong in an `inference`-scoped session.
 
-**References:** mlcommons/inference vision class./detection `GettingStarted.ipynb`; LoadGen; MLCFlow `run-mlperf-inference-app`.
+**References:** mlcommons/inference `GettingStarted.ipynb`; LoadGen; MLCFlow `run-mlperf,inference`.
