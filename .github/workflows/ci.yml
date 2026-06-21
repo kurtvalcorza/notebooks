@@ -1,0 +1,27 @@
+name: aiaas-benchmarking CI
+
+# Deterministic gate for the benchmarking suite: validates every notebook is
+# well-formed and unit-tests the pure aggregation/cost logic. Fast, no GPU, no
+# network, no secrets. Heavy/real benchmark runs are intentionally NOT here.
+#
+# Intentionally NOT path-filtered: the job is a few seconds, and a `paths:`
+# filter would make it safe to mark as a *required* status check only for PRs
+# that touch those paths — a PR that doesn't would leave the required check
+# pending forever and block merge. Running always keeps it requireable.
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test deps
+        run: pip install "pytest>=8,<9"
+      - name: Validate notebooks + run unit tests
+        run: pytest aiaas-benchmarking/tests -q
