@@ -17,6 +17,8 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   standard benchmark tiers, why a homemade `transformers`-timing notebook is
   **not** industry-comparable, the A100 40 GB fit table, per-workload run
   matrix, phases, and the open-items tracker. **Read this first.**
+- **`docs/`** — deep per-notebook reference (one page each: config knobs, run
+  steps, output schema, how to read results). Start at `docs/README.md`.
 - **`vllm_serving_benchmark.ipynb`** — the *comparable* tier. Runs a real vLLM
   OpenAI server + `bench serve` over ShareGPT with a request-rate sweep, and
   reports standardized **TTFT / TPOT / throughput** percentiles you can line up
