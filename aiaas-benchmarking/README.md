@@ -27,6 +27,10 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   tokens/s, samples/s, peak VRAM, and wall-time**. Same VRAM-tiered, ungated,
   fixed-step design so a Colab T4 and an A100 are directly comparable (QLoRA is
   the portable anchor that fits a T4).
+- **`model_swap_benchmark.ipynb`** — the *systems* companion. Measures per-workload
+  **load / unload time, cold-start tax, and resident/peak VRAM**, then gives a
+  **co-residency verdict** (do LLM + embeddings + image-gen fit in the GPU at once?)
+  and the **swap cost** when they don't. Targets the 40 GB binding constraint.
 - **`compare_results.py`** — side-by-side table across platforms; reads the vLLM
   serving JSONs, the LoRA/QLoRA training JSONs, and the PoC proxy notebook JSONs.
 

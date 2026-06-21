@@ -143,3 +143,6 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 - [ ] **Cost model** — collect power (DCGM) + amortized HW for $/M-tokens.
 - [x] **Training track** — portable LoRA/QLoRA fine-tune benchmark added
       (`lora_qlora_train_benchmark.ipynb`). Still to run on A100 + Colab.
+- [x] **Model-swap / cold-start cost** — `model_swap_benchmark.ipynb` measures
+      load/unload/cold-start + resident VRAM and gives a co-residency verdict for
+      the 40 GB card. Still to run on the A100.
