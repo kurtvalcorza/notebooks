@@ -143,6 +143,7 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 - [x] **Retrieval quality (MTEB)** — `mteb_benchmark.ipynb` runs the industry
       leaderboard harness for embeddings + reranking quality (the comparable tier
       for the retrieval stack; no MLPerf equivalent exists).
-- [ ] **Cost model** — collect power (DCGM) + amortized HW for $/M-tokens.
+- [x] **Cost model** — `$/M-tokens` from power + amortized HW added
+      (`cost_model.py`). Refine with measured DCGM power via `--power-watts`.
 - [x] **Training track** — portable LoRA/QLoRA fine-tune benchmark added
       (`lora_qlora_train_benchmark.ipynb`). Still to run on A100 + Colab.
