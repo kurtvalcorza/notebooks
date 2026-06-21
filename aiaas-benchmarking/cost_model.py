@@ -76,18 +76,28 @@ def analyze(run, args):
     env = run.get("env", {})
     gpu = env.get("gpu_name") or env.get("gpu") or "?"
     plat = env.get("platform") or "?"
-    count = int(env.get("gpu_count", 1) or 1)
+
+    # Charge only the GPUs vLLM actually served on (tensor-parallel size),
+    # NOT every visible GPU (env.gpu_count). The shipped serving command is
+    # single-GPU, so default to 1; honor a recorded tensor_parallel_size or a
+    # --gpus override. Otherwise a multi-GPU host overcharges single-GPU runs.
+    if args.gpus is not None:
+        gpus_used = args.gpus
+    else:
+        gpus_used = int(run.get("tensor_parallel_size")
+                        or env.get("tensor_parallel_size") or 1)
 
     tdp, capex = gpu_spec(gpu)
-    power_w = (args.power_watts if args.power_watts is not None else tdp) * count
-    total_capex = (args.gpu_capex if args.gpu_capex is not None else capex) * count * args.server_overhead
+    power_w = (args.power_watts if args.power_watts is not None else tdp) * gpus_used
+    total_capex = (args.gpu_capex if args.gpu_capex is not None else capex) * gpus_used * args.server_overhead
 
     point = pick_point(run)
     out_tps = point.get("output_throughput")
     tot_tps = point.get("total_token_throughput")
 
     return {
-        "label": f"{gpu} x{count} ({plat})",
+        "label": f"{gpu} x{gpus_used} ({plat})",
+        "gpus_used": gpus_used,
         "model": run.get("model"),
         "power_w": power_w,
         "total_capex": total_capex,
@@ -116,11 +126,16 @@ def main(argv):
                     help="measured per-GPU power (W); overrides the TDP estimate")
     ap.add_argument("--gpu-capex", type=float, default=None,
                     help="per-GPU capex (USD); overrides the default table")
+    ap.add_argument("--gpus", type=int, default=None,
+                    help="GPUs vLLM actually used (tensor-parallel size); overrides any "
+                         "value recorded in the JSON (default: recorded value, else 1)")
     ap.add_argument("--json", default=None, help="also write results to this JSON file")
     args = ap.parse_args(argv)
 
     if not 0 < args.util <= 1:
         ap.error("--util must be in (0, 1]")
+    if args.gpus is not None and args.gpus < 1:
+        ap.error("--gpus must be >= 1")
 
     paths = []
     for a in args.paths:
