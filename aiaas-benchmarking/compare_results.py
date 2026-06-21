@@ -96,8 +96,8 @@ def flatten_mlperf(run):
         "model": run.get("model"),
         "mlperf scenario": run.get("scenario"),
         "mlperf valid": pick("Result is", "Result:"),
-        "mlperf QPS": pick("Samples per second", "Scheduled samples per second",
-                           "Completed samples per second"),
+        "mlperf QPS": pick("Completed samples per second", "Samples per second",
+                           "Scheduled samples per second"),
     }
 
 

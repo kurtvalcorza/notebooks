@@ -57,8 +57,8 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   **co-residency verdict** (do LLM + embeddings + image-gen fit in the GPU at once?)
   and the **swap cost** when they don't. Targets the 40 GB binding constraint.
 - **`compare_results.py`** — side-by-side table across platforms; reads the vLLM
-  serving JSONs, the LoRA/QLoRA training JSONs, the cross-framework JSONs, and the
-  PoC proxy notebook JSONs.
+  serving JSONs, the LoRA/QLoRA training JSONs, the cross-framework and
+  TensorRT-LLM JSONs, the MLPerf inference JSONs, and the PoC proxy notebook JSONs.
 - **`cost_model.py`** — turns the vLLM serving throughput into **$/M-tokens**,
   split into energy (power draw × PUE × electricity price) and amortized hardware
   (capex over a utilized lifetime). Per-GPU power/capex defaults, all overridable.

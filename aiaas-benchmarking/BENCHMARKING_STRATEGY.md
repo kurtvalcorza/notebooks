@@ -143,8 +143,10 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
       `inference` fork's LoadGen app, plus an MLCFlow path for any model incl.
       **sdxl** (image-gen comparable) and **whisper** (ASR comparable). Credible
       runs still need real datasets + the A100 (fork session).
-- [x] **Image-gen / ASR comparability** — upgraded from proxies to their MLPerf
-      equivalents (sdxl / whisper) via the MLCFlow path; proxy notebooks dropped.
+- [~] **Image-gen / ASR comparability** — MLCFlow runner added for the MLPerf
+      equivalents (sdxl / whisper); smoke (`execution_mode=test`) by default, so
+      credible numbers still need real datasets + the A100. The PoC proxies stay
+      until these are actually run.
 - [x] **optimum-benchmark** cross-framework notebook added
       (`optimum_crossframework_benchmark.ipynb`). Runs still need a fork session.
 - [x] **TensorRT-LLM** peak-ceiling notebook added (`tensorrt_llm_benchmark.ipynb`,
