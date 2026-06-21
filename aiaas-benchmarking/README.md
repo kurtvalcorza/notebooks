@@ -25,11 +25,12 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
 - **`mlperf_inference_benchmark.ipynb`** — the *standard* tier. Portable bridge to
   **MLPerf Inference**. Two paths: (a) the fork's LoadGen reference app for vision
   classification/detection (mobilenet/resnet50/retinanet), modeled on the fork's
-  `GettingStarted.ipynb`; and (b) an **MLCFlow** path for any MLPerf model —
-  including **`sdxl`** (the comparable image-generation benchmark) and
-  **`whisper`** (the comparable ASR benchmark). Runs under a LoadGen scenario with
-  the accuracy gate; smoke defaults, real datasets / `execution_mode=valid` for
-  credible runs.
+  `GettingStarted.ipynb`; and (b) an **MLCFlow** path that runs the **whole MLPerf
+  Inference suite** as a configurable model list — resnet50, retinanet, bert,
+  3d-unet, dlrm, gptj, **sdxl**, **whisper**, llama3.1-8b, … (incl. the comparable
+  upgrades for the dropped image-gen and ASR proxies). Runs under a LoadGen
+  scenario with the accuracy gate; smoke defaults, real datasets /
+  `execution_mode=valid` for credible runs.
 - **`lora_qlora_train_benchmark.ipynb`** — the *training* companion. Runs a
   fixed-budget LoRA / QLoRA supervised fine-tune of Qwen2.5 and reports **train
   tokens/s, samples/s, peak VRAM, and wall-time**. Same VRAM-tiered, ungated,
