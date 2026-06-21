@@ -80,6 +80,11 @@ def main(argv):
         except Exception as e:
             print(f"skip {p}: {e}")
             continue
+        if not isinstance(run, dict):
+            # e.g. the ShareGPT dataset file, which decodes to a list and the
+            # README glob also matches — skip before any dict access.
+            print(f"skip {p}: not a benchmark result (top-level {type(run).__name__})")
+            continue
         if run.get("schema", "").startswith("vllm-serving-bench"):
             cols.setdefault(label(run), {}).update(flatten_vllm(run))
         elif "tests" in run:
