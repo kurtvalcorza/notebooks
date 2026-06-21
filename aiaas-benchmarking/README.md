@@ -27,8 +27,18 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   tokens/s, samples/s, peak VRAM, and wall-time**. Same VRAM-tiered, ungated,
   fixed-step design so a Colab T4 and an A100 are directly comparable (QLoRA is
   the portable anchor that fits a T4).
+- **`embeddings_benchmark.ipynb`** — the *embeddings/RAG* workload. Sweeps batch
+  size with `sentence-transformers` and reports **sentences/s, tokens/s, latency,
+  VRAM**. Portable proxy tier (runs anywhere).
+- **`image_gen_benchmark.ipynb`** — the *image-generation* workload. Sweeps batch
+  size with `diffusers` and reports **images/s, s/image, VRAM**. VRAM-tiered
+  (SDXL on A100, SD-Turbo on a T4).
 - **`compare_results.py`** — side-by-side table across platforms; reads the vLLM
   serving JSONs, the LoRA/QLoRA training JSONs, and the PoC proxy notebook JSONs.
+- **`report.ipynb`** — combined, charted report: imports `compare_results.py`
+  (and `cost_model.py` when present) and summarizes every result schema —
+  serving, training, cross-framework, peak, embeddings, image-gen — into one
+  place (`aiaas_report.md` / `.json`).
 
 > Your existing **NAIRA PoC v2** notebook is the *proxy* tier — a good
 > cross-platform hardware feel, but not comparable to industry numbers (see the
