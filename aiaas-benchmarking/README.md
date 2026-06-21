@@ -30,8 +30,8 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
 - **`optimum_crossframework_benchmark.ipynb`** — the *cross-framework* tier. Runs
   one model through **PyTorch vs ONNX Runtime (CUDA) vs ONNX Runtime (TensorRT)**
   with HuggingFace `optimum-benchmark`, reporting decode throughput / latency /
-  VRAM per backend so the only variable is the runtime. (Runs belong in a fork
-  session scoped to `optimum-benchmark`; the notebook is portable.)
+  VRAM per backend so the only variable is the runtime (precision held constant at
+  fp32). (Runs belong in a fork session scoped to `optimum-benchmark`; the notebook is portable.)
 - **`compare_results.py`** — side-by-side table across platforms; reads the vLLM
   serving JSONs, the LoRA/QLoRA training JSONs, and the PoC proxy notebook JSONs.
 
