@@ -52,4 +52,3 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
 - TensorRT-LLM (peak A100 ceiling) and optimum-benchmark (cross-framework).
 - Cost model ($/M-tokens from power + amortized HW) and a LoRA/QLoRA training
   benchmark.
-</content>

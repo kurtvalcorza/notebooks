@@ -142,5 +142,3 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 - [ ] **optimum-benchmark** cross-framework run (needs fork session).
 - [ ] **Cost model** — collect power (DCGM) + amortized HW for $/M-tokens.
 - [ ] **Training track** — LoRA/QLoRA 8B fine-tune benchmark.
-</content>
-</invoke>
