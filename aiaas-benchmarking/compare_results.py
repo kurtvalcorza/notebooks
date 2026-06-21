@@ -80,10 +80,11 @@ def main(argv):
         except Exception as e:
             print(f"skip {p}: {e}")
             continue
+        lbl = label(run)
         if run.get("schema", "").startswith("vllm-serving-bench"):
-            cols[label(run)] = flatten_vllm(run)
+            cols.setdefault(lbl, {}).update(flatten_vllm(run))
         else:
-            cols[label(run)] = flatten_poc(run)
+            cols.setdefault(lbl, {}).update(flatten_poc(run))
 
     if not cols:
         print("no usable result files")
