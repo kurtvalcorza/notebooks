@@ -71,16 +71,19 @@ def test_flatten_poc_keys():
     assert out["CV ms/img p50"] == 20
 
 
+# Distinct env per fixture so each lands in its own column (a shared label would
+# merge them and hide a schema that failed to dispatch).
 KNOWN = {
-    "vllm": {"schema": "vllm-serving-bench/1.0", "env": {"gpu_name": "A100", "platform": "p"},
+    "vllm": {"schema": "vllm-serving-bench/1.0", "env": {"gpu_name": "A100", "platform": "vllm"},
              "model": "m", "sweep": {"inf": {"output_throughput": 1}}},
-    "lora": {"schema": "lora-train-bench/1.0", "env": {"gpu_name": "A100", "platform": "p"},
-             "model": "m", "metrics": {}},
-    "optimum": {"schema": "optimum-bench/1.0", "env": {"gpu_name": "A100", "platform": "p"},
+    "lora": {"schema": "lora-train-bench/1.0", "env": {"gpu_name": "A100", "platform": "lora"},
+             "model": "m", "metrics": {"train_tokens_per_second": 1}},
+    "optimum": {"schema": "optimum-bench/1.0", "env": {"gpu_name": "A100", "platform": "optimum"},
                 "model": "m", "summary": {"pytorch": {"decode throughput": 1}}},
-    "trtllm": {"schema": "trtllm-bench/1.0", "env": {"gpu_name": "A100", "platform": "p"},
+    "trtllm": {"schema": "trtllm-bench/1.0", "env": {"gpu_name": "A100", "platform": "trtllm"},
                "model": "m", "summary": {"8": {"out tok/s": 1}}},
-    "poc": {"env": {"gpu_name": "A100", "platform": "p"}, "tests": {"llm": {}}},
+    "poc": {"env": {"gpu_name": "A100", "platform": "poc"},
+            "tests": {"llm": {"ttft": {"p50_s": 0.5}, "tokens_per_s_p50": 1}}},
 }
 
 
@@ -91,6 +94,9 @@ def test_main_recognizes_every_known_schema(tmp_path, capsys):
     out = capsys.readouterr().out
     assert "unrecognized result schema" not in out
     assert "no usable result files" not in out
+    # each schema produced its own column (distinct platform labels)
+    for plat in ("vllm", "lora", "optimum", "trtllm", "poc"):
+        assert plat in out
 
 
 def test_main_skips_unknown_schema(tmp_path, capsys):

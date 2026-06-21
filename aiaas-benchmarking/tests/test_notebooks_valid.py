@@ -2,8 +2,10 @@
 code cell parses. Catches corrupt/truncated notebooks and syntax errors a
 reviewer would otherwise have to spot by eye.
 
-Cells whose source uses Jupyter line/cell magics (`!`, `%`) are skipped — they
-aren't plain Python and don't parse with `ast`.
+Whole-cell magics (`%%bash`, `%%writefile`, …) make the entire cell non-Python,
+so those cells are skipped. For ordinary cells, individual line magics / shell
+escapes (`%timeit`, `!pip ...`) are stripped and the remaining Python is parsed —
+so a syntax error elsewhere in such a cell is still caught.
 """
 import ast
 import glob
@@ -33,10 +35,15 @@ def test_notebook_valid_json_and_cells_parse(path):
         src = "".join(cell.get("source", []))
         if not src.strip():
             continue
-        if any(line.lstrip().startswith(("!", "%")) for line in src.splitlines()):
-            continue  # IPython magic / shell line, not plain Python
+        lines = src.splitlines()
+        first = next((ln for ln in lines if ln.strip()), "")
+        if first.lstrip().startswith("%%"):
+            continue  # whole-cell magic (e.g. %%bash) — not Python
+        # Strip line magics / shell escapes but keep the surrounding Python, so a
+        # syntax error in the real code of a magic-containing cell still fails.
+        py = "\n".join(ln for ln in lines if not ln.lstrip().startswith(("!", "%")))
         try:
-            ast.parse(src)
+            ast.parse(py)
         except SyntaxError as e:
             raise AssertionError(
                 f"{os.path.basename(path)} cell {i} does not parse: {e}"
