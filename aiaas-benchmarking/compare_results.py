@@ -84,6 +84,26 @@ def flatten_mlperf_training(run):
     }
 
 
+def flatten_mlperf(run):
+    """MLPerf Inference: VALID flag + QPS from the LoadGen summary."""
+    sm = run.get("loadgen_summary", {})
+
+    def pick(*names):
+        for n in names:
+            for k, v in sm.items():
+                if n.lower() in k.lower():
+                    return v
+        return None
+
+    return {
+        "model": run.get("model"),
+        "mlperf scenario": run.get("scenario"),
+        "mlperf valid": pick("Result is", "Result:"),
+        "mlperf QPS": pick("Completed samples per second", "Samples per second",
+                           "Scheduled samples per second"),
+    }
+
+
 def flatten_trtllm(run):
     """Best output throughput across concurrency points for a TensorRT-LLM run."""
     best, bt = None, None
@@ -139,6 +159,12 @@ def main(argv):
             cols.setdefault(label(run), {}).update(flatten_optimum(run))
         elif run.get("schema", "").startswith("trtllm-bench"):
             cols.setdefault(label(run), {}).update(flatten_trtllm(run))
+        elif run.get("schema", "").startswith("mlperf-inference"):
+            # MLPerf writes one JSON per model/scenario on the same host, so keying
+            # on the gpu/platform label alone collapses the suite into one column
+            # (later files overwrite earlier). Qualify the key with model/scenario.
+            key = f"{label(run)} | {run.get('model', '?')}/{run.get('scenario', '?')}"
+            cols.setdefault(key, {}).update(flatten_mlperf(run))
         elif run.get("schema", "").startswith("mlperf-training"):
             cols.setdefault(label(run), {}).update(flatten_mlperf_training(run))
         elif "tests" in run:
