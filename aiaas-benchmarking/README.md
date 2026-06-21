@@ -28,12 +28,14 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   fixed-step design so a Colab T4 and an A100 are directly comparable (QLoRA is
   the portable anchor that fits a T4).
 - **`optimum_crossframework_benchmark.ipynb`** — the *cross-framework* tier. Runs
-  one model through **PyTorch vs ONNX Runtime (CUDA) vs ONNX Runtime (TensorRT)**
-  with HuggingFace `optimum-benchmark`, reporting decode throughput / latency /
-  VRAM per backend so the only variable is the runtime (precision held constant at
-  fp32). (Runs belong in a fork session scoped to `optimum-benchmark`; the notebook is portable.)
+  one model through **PyTorch vs ONNX Runtime (CUDA)** (plus the **ONNX Runtime
+  TensorRT EP when the platform exposes it**) with HuggingFace `optimum-benchmark`,
+  reporting decode throughput / latency / VRAM per backend so the only variable is
+  the runtime — **precision matched at fp16** (PyTorch fp16, ORT auto-optimization
+  O4). (Runs belong in a fork session scoped to `optimum-benchmark`; the notebook is portable.)
 - **`compare_results.py`** — side-by-side table across platforms; reads the vLLM
-  serving JSONs, the LoRA/QLoRA training JSONs, and the PoC proxy notebook JSONs.
+  serving JSONs, the LoRA/QLoRA training JSONs, the cross-framework JSONs, and the
+  PoC proxy notebook JSONs.
 
 > Your existing **NAIRA PoC v2** notebook is the *proxy* tier — a good
 > cross-platform hardware feel, but not comparable to industry numbers (see the
