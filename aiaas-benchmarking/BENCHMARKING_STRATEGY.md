@@ -141,5 +141,7 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 - [ ] **MLPerf subset run** on the A100 (Phase 2).
 - [ ] **optimum-benchmark** cross-framework run (needs fork session).
 - [ ] **Cost model** — collect power (DCGM) + amortized HW for $/M-tokens.
-- [x] **Training track** — portable LoRA/QLoRA fine-tune benchmark added
-      (`lora_qlora_train_benchmark.ipynb`). Still to run on A100 + Colab.
+- [~] **Training track** — upgraded from the LoRA/QLoRA proxy (dropped, not
+      industry-comparable) to a **MLPerf Training** runner
+      (`mlperf_training_benchmark.ipynb`, references the `training` fork). Credible
+      to-target runs are cluster-scale; one 40 GB card = smoke/throughput only.

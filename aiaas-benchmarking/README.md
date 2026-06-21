@@ -22,13 +22,14 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   reports standardized **TTFT / TPOT / throughput** percentiles you can line up
   against public vLLM numbers. VRAM-tiered (T4-anchor model vs A100 model),
   ungated Qwen2.5 models, graceful teardown.
-- **`lora_qlora_train_benchmark.ipynb`** — the *training* companion. Runs a
-  fixed-budget LoRA / QLoRA supervised fine-tune of Qwen2.5 and reports **train
-  tokens/s, samples/s, peak VRAM, and wall-time**. Same VRAM-tiered, ungated,
-  fixed-step design so a Colab T4 and an A100 are directly comparable (QLoRA is
-  the portable anchor that fits a T4).
+- **`mlperf_training_benchmark.ipynb`** — the *standard* tier for **training**.
+  Portable runner for **MLPerf Training** (references the `kurtvalcorza/training`
+  fork): trains a reference model to a target quality under MLPerf rules. Honest
+  scope — full to-target runs are cluster-scale; on one 40 GB card use it for a
+  smoke/throughput signal. (Replaces the dropped LoRA proxy, which had no
+  industry-comparable harness.)
 - **`compare_results.py`** — side-by-side table across platforms; reads the vLLM
-  serving JSONs, the LoRA/QLoRA training JSONs, and the PoC proxy notebook JSONs.
+  serving JSONs and the PoC proxy notebook JSONs.
 
 > Your existing **NAIRA PoC v2** notebook is the *proxy* tier — a good
 > cross-platform hardware feel, but not comparable to industry numbers (see the
