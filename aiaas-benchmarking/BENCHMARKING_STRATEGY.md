@@ -140,7 +140,8 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
       expected numbers).
 - [ ] **MLPerf subset run** on the A100 (Phase 2).
 - [ ] **optimum-benchmark** cross-framework run (needs fork session).
-- [ ] **Cost model** — collect power (DCGM) + amortized HW for $/M-tokens.
+- [x] **Cost model** — `$/M-tokens` from power + amortized HW added
+      (`cost_model.py`). Refine with measured DCGM power via `--power-watts`.
 - [x] **Training track** — portable LoRA/QLoRA fine-tune benchmark added
       (`lora_qlora_train_benchmark.ipynb`). Still to run on A100 + Colab.
 - [x] **Model-swap / cold-start cost** — `model_swap_benchmark.ipynb` measures
