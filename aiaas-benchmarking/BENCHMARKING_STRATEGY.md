@@ -146,6 +146,7 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 - [x] **Image-gen / ASR comparability** — upgraded from proxies to their MLPerf
       equivalents (sdxl / whisper) via the MLCFlow path; proxy notebooks dropped.
 - [ ] **optimum-benchmark** cross-framework run (needs fork session).
-- [ ] **Cost model** — collect power (DCGM) + amortized HW for $/M-tokens.
+- [x] **Cost model** — `$/M-tokens` from power + amortized HW added
+      (`cost_model.py`). Refine with measured DCGM power via `--power-watts`.
 - [x] **Training track** — portable LoRA/QLoRA fine-tune benchmark added
       (`lora_qlora_train_benchmark.ipynb`). Still to run on A100 + Colab.
