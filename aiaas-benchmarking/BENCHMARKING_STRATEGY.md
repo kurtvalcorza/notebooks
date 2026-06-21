@@ -143,3 +143,5 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 - [ ] **Cost model** — collect power (DCGM) + amortized HW for $/M-tokens.
 - [x] **Training track** — portable LoRA/QLoRA fine-tune benchmark added
       (`lora_qlora_train_benchmark.ipynb`). Still to run on A100 + Colab.
+- [x] **ASR + VLM workloads** — portable proxy benchmarks added
+      (`asr_benchmark.ipynb` faster-whisper, `vlm_benchmark.ipynb` Qwen2.5-VL).

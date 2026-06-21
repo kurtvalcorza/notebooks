@@ -27,6 +27,12 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   tokens/s, samples/s, peak VRAM, and wall-time**. Same VRAM-tiered, ungated,
   fixed-step design so a Colab T4 and an A100 are directly comparable (QLoRA is
   the portable anchor that fits a T4).
+- **`asr_benchmark.ipynb`** — the *speech-to-text* workload. faster-whisper over
+  synthetic audio; reports **RTF / ×real-time speedup / audio-sec-per-sec** and
+  GPU memory. Portable proxy tier.
+- **`vlm_benchmark.ipynb`** — the *vision-language (multimodal)* workload. A
+  Qwen2.5-VL answers a prompt about an image; reports **output tokens/s, latency,
+  VRAM** across batch sizes. Portable proxy tier.
 - **`compare_results.py`** — side-by-side table across platforms; reads the vLLM
   serving JSONs, the LoRA/QLoRA training JSONs, and the PoC proxy notebook JSONs.
 
