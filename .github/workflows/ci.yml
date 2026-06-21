@@ -1,0 +1,28 @@
+name: aiaas-benchmarking CI
+
+# Deterministic gate for the benchmarking suite: validates every notebook is
+# well-formed and unit-tests the pure aggregation/cost logic. Fast, no GPU, no
+# network, no secrets. Heavy/real benchmark runs are intentionally NOT here.
+on:
+  pull_request:
+    paths:
+      - 'aiaas-benchmarking/**'
+      - '.github/workflows/ci.yml'
+  push:
+    branches: [ main ]
+    paths:
+      - 'aiaas-benchmarking/**'
+      - '.github/workflows/ci.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test deps
+        run: pip install pytest
+      - name: Validate notebooks + run unit tests
+        run: pytest aiaas-benchmarking/tests -q
