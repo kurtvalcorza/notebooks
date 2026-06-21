@@ -139,7 +139,8 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 - [ ] **Confirm A100 SKU** — SXM vs PCIe, 40 vs 80 GB (changes the fit table and
       expected numbers).
 - [ ] **MLPerf subset run** on the A100 (Phase 2).
-- [ ] **optimum-benchmark** cross-framework run (needs fork session).
+- [x] **optimum-benchmark** cross-framework notebook added
+      (`optimum_crossframework_benchmark.ipynb`). Runs still need a fork session.
 - [x] **TensorRT-LLM** peak-ceiling notebook added (`tensorrt_llm_benchmark.ipynb`,
       `trtllm-bench` PyTorch backend). Runs need the `TensorRT-LLM` fork session
       on an A100/Hopper GPU.
