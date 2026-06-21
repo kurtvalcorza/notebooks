@@ -43,23 +43,7 @@ Standalone notebooks for the Colab web interface, with **Open in Colab** badges 
 
 ## Colab + VS Code Notebooks (`colab-vscode/`)
 
-These notebooks are intended to be run using the **Google Colab extension for Visual Studio Code**, allowing you to:
-
-- Use VS Code for editing, navigation, and tooling
-- Execute code on Colab-backed runtimes (CPU/GPU)
-- Follow a Git-first, reproducible workflow
-
-### Colab in VS Code — Demo Notebook
-
-This demo notebook validates and bootstraps a Colab runtime inside VS Code by:
-- Checking GPU and CUDA availability
-- Inspecting the runtime filesystem
-- Cloning project repositories directly into the ephemeral runtime
-
-See the README inside `colab-vscode/` for:
-- VS Code setup instructions
-- Runtime selection guidance
-- Workflow notes and constraints
+Notebooks for running Colab-backed runtimes inside Visual Studio Code, with setup instructions, runtime selection guidance, and workflow notes, live in [`colab-vscode/`](colab-vscode/#readme).
 
 ---
 
