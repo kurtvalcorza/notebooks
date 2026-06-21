@@ -21,6 +21,8 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   JSON schemas, aggregation/reporting, cost methodology, metrics glossary, the
   fork workflow, and troubleshooting.
 - **`SESSION_HANDOFF.md`** — the original kickoff plan (goal, tiers, forks).
+- **`docs/`** — deep per-notebook reference (one page each: config knobs, run
+  steps, output schema, how to read results). Start at `docs/README.md`.
 - **`vllm_serving_benchmark.ipynb`** — the *comparable* tier. Runs a real vLLM
   OpenAI server + `bench serve` over ShareGPT with a request-rate sweep, and
   reports standardized **TTFT / TPOT / throughput** percentiles you can line up
@@ -41,6 +43,10 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   scope — full to-target runs are cluster-scale; on one 40 GB card use it for a
   smoke/throughput signal. (Replaces the dropped LoRA proxy, which had no
   industry-comparable harness.)
+- **`mteb_benchmark.ipynb`** — the *standard* tier for retrieval. Runs **MTEB**
+  (the industry leaderboard) for **embeddings + reranking quality** (MAP/MRR,
+  Spearman, accuracy), so scores line up with the public MTEB leaderboard. The
+  quality counterpart to the embeddings throughput proxy.
 - **`tensorrt_llm_benchmark.ipynb`** — the *peak-ceiling* tier. Runs
   TensorRT-LLM's own `trtllm-bench` (PyTorch backend) over a concurrency sweep and
   reports **TTFT / TPOT / output throughput**, so the gap vs the vLLM notebook is
