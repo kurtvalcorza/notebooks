@@ -143,7 +143,5 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 - [ ] **Cost model** — collect power (DCGM) + amortized HW for $/M-tokens.
 - [x] **Training track** — portable LoRA/QLoRA fine-tune benchmark added
       (`lora_qlora_train_benchmark.ipynb`). Still to run on A100 + Colab.
-- [x] **Non-LLM portable benchmarks** — embeddings (`embeddings_benchmark.ipynb`)
-      and image generation (`image_gen_benchmark.ipynb`) added (proxy tier).
-- [x] **Combined report** — `report.ipynb` aggregates all result schemas and
+- [x] **Combined report** — `report.ipynb` aggregates the result schemas and
       reuses `compare_results.py` / `cost_model.py`.
