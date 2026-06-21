@@ -139,9 +139,12 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 - [ ] **Confirm A100 SKU** — SXM vs PCIe, 40 vs 80 GB (changes the fit table and
       expected numbers).
 - [~] **MLPerf subset run** on the A100 (Phase 2) — portable runner notebook
-      added (`mlperf_inference_benchmark.ipynb`, vision class/detection via the
-      `inference` fork's LoadGen app). Credible runs still need real datasets +
-      the A100 (fork session).
+      added (`mlperf_inference_benchmark.ipynb`): vision class/detection via the
+      `inference` fork's LoadGen app, plus an MLCFlow path for any model incl.
+      **sdxl** (image-gen comparable) and **whisper** (ASR comparable). Credible
+      runs still need real datasets + the A100 (fork session).
+- [x] **Image-gen / ASR comparability** — upgraded from proxies to their MLPerf
+      equivalents (sdxl / whisper) via the MLCFlow path; proxy notebooks dropped.
 - [ ] **optimum-benchmark** cross-framework run (needs fork session).
 - [ ] **Cost model** — collect power (DCGM) + amortized HW for $/M-tokens.
 - [x] **Training track** — portable LoRA/QLoRA fine-tune benchmark added
