@@ -22,6 +22,12 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
   reports standardized **TTFT / TPOT / throughput** percentiles you can line up
   against public vLLM numbers. VRAM-tiered (T4-anchor model vs A100 model),
   ungated Qwen2.5 models, graceful teardown.
+- **`mlperf_inference_benchmark.ipynb`** — the *standard* tier. Portable bridge to
+  **MLPerf Inference**: clones the `kurtvalcorza/inference` fork, builds LoadGen +
+  the reference app, and runs the vision classification/detection benchmark
+  (mobilenet/resnet50/retinanet) under a LoadGen scenario with the accuracy gate,
+  normalizing `mlperf_log_summary.txt` into the suite. Modeled on the fork's
+  `GettingStarted.ipynb`; smoke-test defaults, real datasets + MLCFlow for credible runs.
 - **`lora_qlora_train_benchmark.ipynb`** — the *training* companion. Runs a
   fixed-budget LoRA / QLoRA supervised fine-tune of Qwen2.5 and reports **train
   tokens/s, samples/s, peak VRAM, and wall-time**. Same VRAM-tiered, ungated,

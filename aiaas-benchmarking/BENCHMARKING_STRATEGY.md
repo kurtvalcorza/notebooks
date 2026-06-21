@@ -138,7 +138,10 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
       (`vllm_serving_benchmark.ipynb`). Still to run on A100 + Colab.
 - [ ] **Confirm A100 SKU** — SXM vs PCIe, 40 vs 80 GB (changes the fit table and
       expected numbers).
-- [ ] **MLPerf subset run** on the A100 (Phase 2).
+- [~] **MLPerf subset run** on the A100 (Phase 2) — portable runner notebook
+      added (`mlperf_inference_benchmark.ipynb`, vision class/detection via the
+      `inference` fork's LoadGen app). Credible runs still need real datasets +
+      the A100 (fork session).
 - [ ] **optimum-benchmark** cross-framework run (needs fork session).
 - [ ] **Cost model** — collect power (DCGM) + amortized HW for $/M-tokens.
 - [x] **Training track** — portable LoRA/QLoRA fine-tune benchmark added
