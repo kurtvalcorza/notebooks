@@ -152,6 +152,9 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 - [x] **TensorRT-LLM** peak-ceiling notebook added (`tensorrt_llm_benchmark.ipynb`,
       `trtllm-bench` PyTorch backend). Runs need the `TensorRT-LLM` fork session
       on an A100/Hopper GPU.
+- [x] **Retrieval quality (MTEB)** — `mteb_benchmark.ipynb` runs the industry
+      leaderboard harness for embeddings + reranking quality (the comparable tier
+      for the retrieval stack; no MLPerf equivalent exists).
 - [x] **Cost model** — `$/M-tokens` from power + amortized HW added
       (`cost_model.py`). Refine with measured DCGM power via `--power-watts`.
 - [x] **Training track** — portable LoRA/QLoRA fine-tune benchmark added
