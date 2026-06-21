@@ -15,8 +15,7 @@ Runs the **Massive Text Embedding Benchmark (MTEB)** — the industry leaderboar
 | Knob | Default | Notes |
 |------|---------|-------|
 | `MODEL` | BAAI/bge-small-en-v1.5 | ungated; on the leaderboard |
-| `TASKS` | AskUbuntuDupQuestions, STSBenchmark, Banking77Classification | quick representative trio |
-| `` |  | full suite = `mteb.get_benchmark('MTEB(eng)')` (slow) |
+| `TASKS` | AskUbuntuDupQuestions, STSBenchmark, Banking77Classification | quick representative trio; add task names (e.g. `SciFact` for retrieval) to broaden — the full leaderboard suite is many hours |
 
 ## How to run
 1. Installs `mteb` + sentence-transformers.
