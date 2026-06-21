@@ -1,0 +1,19 @@
+# Python build artifacts
+__pycache__/
+*.pyc
+
+# Benchmark outputs (generated at run time)
+*_results/
+*_bench_results/
+mlperf_results/
+mlperf_mlc_results/
+mlperf_training_results/
+model_swap_results/
+aiaas_report.md
+aiaas_report.json
+report_*.png
+
+# Cloned reference forks (created by the runner notebooks)
+TensorRT-LLM-ref/
+inference-ref/
+training-ref/
