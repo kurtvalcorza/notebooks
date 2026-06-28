@@ -1,11 +1,12 @@
 # AIaaS Benchmarking — Full Documentation
 
 Portable, cross-platform benchmarks for sizing an **AI-as-a-Service** platform on a
-single **A100 (40 GB)** server and comparing it against cloud notebook services
-(Colab, SageMaker Studio Lab, Kaggle, …).
+**single-GPU server** (any CUDA GPU — the notebooks tier themselves by detected
+VRAM) and comparing it against cloud notebook services (Colab, SageMaker Studio
+Lab, Kaggle, …).
 
 This is the reference manual. For the *why* (tiers, the five reasons a homemade
-timing notebook isn't industry-comparable, the 40 GB fit table, phases), read
+timing notebook isn't industry-comparable, the VRAM fit table, phases), read
 **`BENCHMARKING_STRATEGY.md`** first. Deep per-notebook pages live in **`docs/`**.
 
 > **Design principle:** every benchmark notebook in this package is
@@ -91,7 +92,7 @@ ships on `main` any longer.
 | #14 | `tensorrt_llm_benchmark.ipynb` — ✅ **merged** |
 | #15 | `report.ipynb` — ✅ **merged** |
 | #16 | `model_swap_benchmark.ipynb` — ✅ **merged** |
-| #18 | `DOCS.md`, `SESSION_HANDOFF.md` — ✅ **merged** |
+| #18 | `DOCS.md` — ✅ **merged** |
 | #19 | `mlperf_inference_benchmark.ipynb` (LoadGen app + MLCFlow sdxl/whisper) — ✅ **merged** |
 | #20 | `docs/` per-notebook pages — ✅ **merged** |
 | #22 | `mteb_benchmark.ipynb` — ✅ **merged** |
@@ -112,10 +113,17 @@ ships on `main` any longer.
    …or open **`report.ipynb`** from `aiaas-benchmarking/` for a combined report.
 
 ### Platform notes
+- **Native Windows:** not a supported target for the heavy notebooks —
+  **vLLM** (`vllm_serving_benchmark`) and **TensorRT-LLM** (`tensorrt_llm_benchmark`)
+  are **Linux-only** and won't install/run on Windows; **MLPerf** (LoadGen C++ build)
+  effectively needs Linux too. Run those under **WSL2** (CUDA-on-WSL) or on
+  Colab / the on-prem Linux box. `mteb_benchmark` and `optimum_crossframework`
+  (PyTorch/ONNX path) are the most likely to run on native Windows; the NAIRA PoC
+  v2 proxy runs anywhere.
 - **Colab:** vLLM/TensorRT-LLM may upgrade torch → *Runtime → Restart*, re-run from install.
 - **T4 (Turing):** runs the small tiers; **not** supported by TensorRT-LLM (Ampere+).
 - **Kaggle / SageMaker:** locked-down; the heavy installs may fail — use the PoC there.
-- **MLPerf / MLPerf-Training:** heavy (datasets, LoadGen); really want the A100 + a fork session.
+- **MLPerf / MLPerf-Training:** heavy (datasets, LoadGen); really want a capable GPU + a fork session (Linux).
 
 ---
 
@@ -191,12 +199,12 @@ session scoped to the fork, then:
 
 ---
 
-## 9. Capacity & the 40 GB constraint
+## 9. Capacity & the VRAM constraint
 
-The serving workloads don't all fit resident in 40 GB at once.
-`model_swap_benchmark.ipynb` gives the co-residency verdict + swap cost; combine
-with the throughput notebooks (capacity at SLA) and `cost_model.py` ($/M-tokens) to
-decide what stays warm vs. loads on demand.
+The serving workloads don't all fit resident in a single GPU's VRAM at once.
+`model_swap_benchmark.ipynb` gives the co-residency verdict + swap cost against
+the card's detected VRAM; combine with the throughput notebooks (capacity at SLA)
+and `cost_model.py` ($/M-tokens) to decide what stays warm vs. loads on demand.
 
 ---
 
@@ -214,7 +222,7 @@ decide what stays warm vs. loads on demand.
 ## 11. Roadmap / open items
 
 See `BENCHMARKING_STRATEGY.md` → *Open items*. Outstanding:
-- **Run** the notebooks on the A100 + Colab to collect numbers (all are code-complete, un-run).
-- **Confirm the A100 SKU** (SXM vs PCIe, 40 vs 80 GB).
+- **Run** the notebooks on the target GPU + Colab to collect numbers (all are code-complete, un-run).
+- **Record the GPU SKU + VRAM** (exact card, SXM vs PCIe, VRAM size).
 - **Credible heavy runs** in the forks: MLPerf inference/training, optimum, TensorRT-LLM.
 - Polish: measured DCGM power capture in the serving notebook; `$/image` cost extension.

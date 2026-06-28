@@ -1,8 +1,9 @@
 # AIaaS Benchmarking — portable / cross-platform notebooks
 
-Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
-**A100 (40 GB)** server and comparing it against cloud notebook services
-(Colab, SageMaker Studio Lab, Kaggle, …).
+Portable benchmarks for sizing an **AI-as-a-Service** platform on a
+**single-GPU server** (any CUDA GPU — the notebooks tier themselves by detected
+VRAM) and comparing it against cloud notebook services (Colab, SageMaker Studio
+Lab, Kaggle, …).
 
 ## Where things live (two-repo split)
 
@@ -15,18 +16,17 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
 
 - **`BENCHMARKING_STRATEGY.md`** — the master plan. Proxy vs comparable vs
   standard benchmark tiers, why a homemade `transformers`-timing notebook is
-  **not** industry-comparable, the A100 40 GB fit table, per-workload run
+  **not** industry-comparable, the VRAM fit table, per-workload run
   matrix, phases, and the open-items tracker. **Read this first.**
 - **`DOCS.md`** — full reference manual: notebook catalog, quick start, result
   JSON schemas, aggregation/reporting, cost methodology, metrics glossary, the
   fork workflow, and troubleshooting.
-- **`SESSION_HANDOFF.md`** — the original kickoff plan (goal, tiers, forks).
 - **`docs/`** — deep per-notebook reference (one page each: config knobs, run
   steps, output schema, how to read results). Start at `docs/README.md`.
 - **`vllm_serving_benchmark.ipynb`** — the *comparable* tier. Runs a real vLLM
   OpenAI server + `bench serve` over ShareGPT with a request-rate sweep, and
   reports standardized **TTFT / TPOT / throughput** percentiles you can line up
-  against public vLLM numbers. VRAM-tiered (T4-anchor model vs A100 model),
+  against public vLLM numbers. VRAM-tiered (T4-anchor model vs high-VRAM model),
   ungated Qwen2.5 models, graceful teardown.
 - **`mlperf_inference_benchmark.ipynb`** — the *standard* tier. Portable bridge to
   **MLPerf Inference**. Two paths: (a) the fork's LoadGen reference app for vision
@@ -40,7 +40,7 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
 - **`mlperf_training_benchmark.ipynb`** — the *standard* tier for **training**.
   Portable runner for **MLPerf Training** (references the `kurtvalcorza/training`
   fork): trains a reference model to a target quality under MLPerf rules. Honest
-  scope — full to-target runs are cluster-scale; on one 40 GB card use it for a
+  scope — full to-target runs are cluster-scale; on a single card use it for a
   smoke/throughput signal. (Replaces the dropped LoRA proxy, which had no
   industry-comparable harness.)
 - **`mteb_benchmark.ipynb`** — the *standard* tier for retrieval. Runs **MTEB**
@@ -62,7 +62,8 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
 - **`model_swap_benchmark.ipynb`** — the *systems* companion. Measures per-workload
   **load / unload time, cold-start tax, and resident/peak VRAM**, then gives a
   **co-residency verdict** (do LLM + embeddings + image-gen fit in the GPU at once?)
-  and the **swap cost** when they don't. Targets the 40 GB binding constraint.
+  and the **swap cost** when they don't. Targets your GPU's VRAM as the binding
+  constraint (reads detected VRAM — no fixed card size assumed).
 - **`compare_results.py`** — side-by-side table across platforms; reads the vLLM
   serving JSONs, the cross-framework and TensorRT-LLM JSONs, the MLPerf inference
   and MLPerf training JSONs, and the PoC proxy notebook JSONs.
@@ -93,6 +94,11 @@ Portable benchmarks for sizing an **AI-as-a-Service** platform on a single
 > vLLM brings its own CUDA-matched torch; on Colab the install may require a
 > runtime restart. On locked-down environments (SageMaker Studio Lab, Kaggle)
 > vLLM may not install — use the PoC proxy notebook there instead.
+>
+> **Native Windows is not supported for the heavy notebooks** (vLLM and
+> TensorRT-LLM are Linux-only; MLPerf needs Linux too) — run them under **WSL2**
+> (CUDA-on-WSL), on Colab, or on the on-prem Linux box. `mteb_benchmark` and the
+> `optimum_crossframework` PyTorch/ONNX path are the most Windows-friendly.
 
 ## Next rungs (tracked in the strategy doc)
 
