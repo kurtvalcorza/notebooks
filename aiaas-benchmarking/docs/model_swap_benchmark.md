@@ -2,7 +2,7 @@
 
 **Notebook:** `model_swap_benchmark.ipynb` · **Tier:** Systems (tooling) · **Workload:** Multi-tenant capacity · **GPU:** T4+ (any CUDA GPU)
 
-Measures per-workload load/unload time, cold-start tax, and resident/peak VRAM, then gives a co-residency verdict for the 40 GB constraint. Capacity tooling, not a comparable benchmark.
+Measures per-workload load/unload time, cold-start tax, and resident/peak VRAM, then gives a co-residency verdict against the card's detected VRAM (no fixed card size assumed). Capacity tooling, not a comparable benchmark.
 
 ## What it measures
 - **load / unload** time

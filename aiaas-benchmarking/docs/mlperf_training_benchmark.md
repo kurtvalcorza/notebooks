@@ -27,11 +27,11 @@ Writes `mlperf_training_results/...json` with schema **`mlperf-training/1.0`** (
 
 ## How to read the results
 
-A to-target MLPerf Training run needs the reference world size (often 8+ GPUs) and runs hours-to-days; on one 40 GB A100 use this for a **smoke/throughput** signal only.
+A to-target MLPerf Training run needs the reference world size (often 8+ GPUs) and runs hours-to-days; on a single card use this for a **smoke/throughput** signal only.
 
 ## Caveats
 - Cluster-scale + large per-benchmark datasets.
-- Single 40 GB card = bridge/smoke, not a to-target result.
+- A single card = bridge/smoke, not a to-target result.
 - Runs belong in a `training`-fork session on adequate hardware.
 
 **References:** mlcommons/training reference implementations; MLLog.

@@ -1,10 +1,15 @@
 # AIaaS Benchmarking Strategy
 
-Goal: benchmark an on-prem **A100 (40 GB)** server (and compare it against cloud
-notebook services — Colab, SageMaker Studio Lab, Kaggle, etc.) to plan an
-inference + training "AI-as-a-Service" platform. We want both **internal
-capacity-planning** numbers and **externally-credible / industry-comparable**
-numbers.
+Goal: benchmark an on-prem **single-GPU server** (any CUDA GPU — the notebooks
+tier themselves by detected VRAM) and compare it against cloud notebook services
+— Colab, SageMaker Studio Lab, Kaggle, etc. — to plan an inference + training
+"AI-as-a-Service" platform. We want both **internal capacity-planning** numbers
+and **externally-credible / industry-comparable** numbers.
+
+> The suite is GPU-agnostic: nothing is hardwired to a specific card. The fit
+> table below is a *worked example* — read the column for your VRAM budget, and
+> the capacity tooling (`model_swap_benchmark`, `cost_model.py`) keys off the
+> GPU you actually run on.
 
 This document is the source of truth for *how* we benchmark and *why*. It also
 tracks the open items.
@@ -22,7 +27,7 @@ interchangeable:
 | **Comparable** | serving numbers you can put next to vendor blogs & community runs | **vLLM `benchmark_serving`** + ShareGPT | ✅ Yes (same harness everyone uses) |
 | **Standard** | leaderboard-grade, accuracy-gated, audited | **MLPerf Inference** (this repo) | ✅ Yes (official rules) |
 | **Cross-framework** | same model across PyTorch / ONNX Runtime / TensorRT | **optimum-benchmark** | ✅ Yes (one standardized harness) |
-| **Peak HW** | best-case A100 ceiling | **TensorRT-LLM** | ✅ Yes (vendor-grade) |
+| **Peak HW** | best-case GPU ceiling | **TensorRT-LLM** | ✅ Yes (vendor-grade) |
 
 Keep the proxy notebook for cross-platform breadth; use the comparable/standard
 tiers for any number that leaves the building.
@@ -62,29 +67,32 @@ harness they ran.
 
 ---
 
-## Hardware reality (single A100 40 GB)
+## Hardware reality (single GPU — VRAM is the binding constraint)
 
-40 GB is the binding constraint. Rough single-card fit:
+Whatever single GPU you run on, **VRAM is the binding constraint.** Rough fp16
+single-card fit by VRAM budget (the ~40 GB column is the original worked example;
+read the column closest to your card):
 
-| Workload | Fits | Tight (quant/offload) | Won't fit |
-|----------|------|-----------------------|-----------|
-| LLM chat | ≤8B fp16 (~16 GB) | ~14B fp16; 70B 4-bit (slow) | 70B+ fp16, Mixtral fp16 |
-| Embeddings/RAG | all (bge/e5/gte <2 GB) | — | — |
-| Vision/VLM | 7B VLMs | larger VLMs | 70B+ VLMs |
-| Image/video gen | SDXL | video (Wan2.2, CogVideoX) | large video fp16 |
-| Training | LoRA/QLoRA on 7–8B | full FT of small models | full FT ≥13B |
+| Workload | ~16 GB (T4/L4/V100) | ~24 GB (A10/L40S/4090) | ~40 GB (A100-40) | ~80 GB (A100-80/H100) |
+|----------|---------------------|------------------------|------------------|------------------------|
+| LLM chat (fp16) | ≤3B | ≤8B | ≤14B; 70B 4-bit (slow) | ≤32B; 70B 4-bit comfortably |
+| Embeddings/RAG | all (bge/e5/gte <2 GB) | all | all | all |
+| Vision/VLM | small VLMs | 7B VLMs | 7B VLMs + headroom | larger VLMs |
+| Image/video gen | SDXL (tight) | SDXL | SDXL; short video | large video |
+| Training | LoRA on ≤3B | LoRA/QLoRA 7–8B | LoRA/QLoRA 7–8B; small full FT | full FT of small–mid models |
 
-Serving *all four workload types resident at once* does **not** fit in 40 GB —
-so part of the benchmark is measuring **model-swap / cold-start cost** and
+Serving *all workload types resident at once* generally does **not** fit a single
+card — so part of the benchmark is measuring **model-swap / cold-start cost** and
 deciding what stays resident vs. loaded on demand. (Flag for the scale phase.)
+`model_swap_benchmark.ipynb` runs this test against your card's detected VRAM.
 
 ---
 
 ## Recommended run matrix
 
-For each platform (on-prem A100, Colab, SageMaker Studio Lab, …):
+For each platform (on-prem GPU, Colab, SageMaker Studio Lab, …):
 
-| Workload | Proxy (everywhere) | Comparable / Standard (A100, capable GPUs) |
+| Workload | Proxy (everywhere) | Comparable / Standard (capable GPUs) |
 |----------|--------------------|--------------------------------------------|
 | LLM chat | PoC notebook (Qwen 3B) | **vLLM benchmark_serving** (ShareGPT) → MLPerf **llama3.1-8b** |
 | Embeddings/RAG | PoC notebook | optimum-benchmark (bge/e5) |
@@ -102,17 +110,17 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 ## Phases
 
 - **Phase 0 — Environment baseline.** Pin driver/CUDA/engine versions; record
-  peak FP16/FP8 FLOPS & memory BW; confirm A100 SKU (SXM vs PCIe, 40 vs 80 GB);
-  stand up DCGM/nvidia-smi power capture.
+  peak FP16/FP8 FLOPS & memory BW; record the GPU SKU + VRAM (it sets the fit
+  table and expected numbers); stand up DCGM/nvidia-smi power capture.
 - **Phase 1 — Comparable serving (this PR's notebook).** vLLM benchmark_serving
-  on A100 + Colab; latency-vs-throughput curve; max users at SLA.
-- **Phase 2 — Standard/credible.** MLPerf Inference subset that fits 40 GB:
+  on the target GPU + Colab; latency-vs-throughput curve; max users at SLA.
+- **Phase 2 — Standard/credible.** MLPerf Inference subset that fits your VRAM:
   `resnet50`, `retinanet`, `bert`, `3d-unet`, `stable-diffusion-xl`,
   `llama3.1-8b`, `whisper` (Offline + Server scenarios).
 - **Phase 3 — Capacity + cost model.** Combine curves into users-per-model at
   SLA; derive $/M-tokens and $/image; document model-swap latency.
 - **Training track.** **MLPerf Training** reference runs (the comparable harness)
-  via `mlperf_training_benchmark.ipynb`. On one 40 GB card this is a
+  via `mlperf_training_benchmark.ipynb`. On a single card this is a
   smoke/throughput signal only — full to-target runs are cluster-scale. (The
   earlier LoRA/QLoRA proxy was dropped as non-comparable.)
 
@@ -122,7 +130,7 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 
 - `inference` (this repo) — MLPerf Inference, Phase 2 standard runs.
 - `optimum` / `optimum-benchmark` — cross-framework comparable runs.
-- `TensorRT` (+ TensorRT-LLM) — peak A100 ceiling after baseline.
+- `TensorRT` (+ TensorRT-LLM) — peak GPU ceiling after baseline (Ampere+).
 - `training` — reference only; use lightweight fine-tune benchmarks instead.
 
 > Note: these forks are **not** in the current session's repo scope (scoped to
@@ -136,18 +144,18 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 - [ ] **Colab-ready portable notebook** — superseded by the existing NAIRA PoC
       v2 notebook (good proxy). Re-evaluate if we want a cleaned/merged version.
 - [x] **vLLM serving benchmark notebook** — added
-      (`vllm_serving_benchmark.ipynb`). Still to run on A100 + Colab.
-- [ ] **Confirm A100 SKU** — SXM vs PCIe, 40 vs 80 GB (changes the fit table and
-      expected numbers).
-- [~] **MLPerf subset run** on the A100 (Phase 2) — portable runner notebook
+      (`vllm_serving_benchmark.ipynb`). Still to run on the target GPU + Colab.
+- [ ] **Record the GPU SKU + VRAM** — exact card, SXM vs PCIe, VRAM size (sets
+      the fit table and expected numbers).
+- [~] **MLPerf subset run** on the target GPU (Phase 2) — portable runner notebook
       added (`mlperf_inference_benchmark.ipynb`): vision class/detection via the
       `inference` fork's LoadGen app, plus an MLCFlow path for any model incl.
       **sdxl** (image-gen comparable) and **whisper** (ASR comparable). Credible
-      runs still need real datasets + the A100 (fork session).
+      runs still need real datasets + a capable GPU (fork session).
 - [~] **Image-gen / ASR comparability** — MLCFlow runner added for the MLPerf
       equivalents (sdxl / whisper); smoke (`execution_mode=test`) by default, so
-      credible numbers still need real datasets + the A100. The PoC proxies stay
-      until these are actually run.
+      credible numbers still need real datasets + a capable GPU. The PoC proxies
+      stay until these are actually run.
 - [x] **optimum-benchmark** cross-framework notebook added
       (`optimum_crossframework_benchmark.ipynb`). Runs still need a fork session.
 - [x] **TensorRT-LLM** peak-ceiling notebook added (`tensorrt_llm_benchmark.ipynb`,
@@ -161,10 +169,10 @@ and **tokens/sec-per-dollar-hour** (the last decides hosting).
 - [~] **Training track** — upgraded from the LoRA/QLoRA proxy (dropped, not
       industry-comparable) to a **MLPerf Training** runner
       (`mlperf_training_benchmark.ipynb`, references the `training` fork). Credible
-      to-target runs are cluster-scale; one 40 GB card = smoke/throughput only.
+      to-target runs are cluster-scale; a single card = smoke/throughput only.
 - [x] **Model-swap / cold-start cost** — `model_swap_benchmark.ipynb` measures
-      load/unload/cold-start + resident VRAM and gives a co-residency verdict for
-      the 40 GB card. Still to run on the A100.
+      load/unload/cold-start + resident VRAM and gives a co-residency verdict
+      against the card's detected VRAM. Still to run on the target GPU.
 - [x] **Combined report** — `report.ipynb` aggregates the result schemas and
       reuses `compare_results.py` / `cost_model.py`. Each section populates only
       once its producing notebook (and `cost_model.py`) is present; degrades

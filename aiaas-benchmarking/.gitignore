@@ -2,6 +2,10 @@
 __pycache__/
 *.pyc
 
+# Local virtualenvs
+.venv-bench/
+.venv/
+
 # Benchmark outputs (generated at run time)
 *_results/
 *_bench_results/
